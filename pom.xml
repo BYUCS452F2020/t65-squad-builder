@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>edu.byu.hbll.maven</groupId>
+    <artifactId>application-parent</artifactId>
+    <version>3.6.0</version>
+  </parent>
+
+  <groupId>com.tcashcroft</groupId>
+  <artifactId>t65-squad-builder</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>A squad builder and inventory tool for X-Wing 2.0.</description>
+  <url>https://github.com/BYUCS452F2020/t65-squad-builder</url>
+
+  <properties>
+    <frontend.install.phase>generate-resources</frontend.install.phase>
+    <frontend.package.phase>prepare-package</frontend.package.phase>
+    <frontend.contextRoot>t65-squad-builder</frontend.contextRoot>
+    <frontend.name>t65-squad-builder</frontend.name>
+    <scm.repository>github.com/BYUCS452F2020/t65-squad-builder</scm.repository>
+  </properties>
+
+  <scm>
+    <connection>scm:git:git://${scm.repository}.git</connection>
+    <developerConnection>scm:git:ssh://${scm.repository}.git</developerConnection>
+    <url>https://${scm.repository}</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>edu.byu.hbll</groupId>
+      <artifactId>misc</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+  </dependencies>
+
+</project>
