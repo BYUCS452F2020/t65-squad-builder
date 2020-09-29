@@ -19,5 +19,18 @@ public class Properties {
     @ConfigurationProperties(prefix = "harvester")
     public static class HarvesterProperties {
        private String cardApiUri;
+       private XwingData2 xwingData2;
+    }
+
+    @Data
+    @Configuration
+    @ConfigurationProperties(prefix = "xwing-data2")
+    public static class XwingData2 {
+        private String dataRepoUri;
+        private String dataRepoLocation;
+        private String actionsPath;
+        private String factionsPath;
+        private String pilotsPath;
+        private String ffgXwsPath;
     }
 }
