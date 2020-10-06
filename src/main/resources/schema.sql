@@ -1,59 +1,53 @@
-CREATE DATABASE `t65_squad_builder` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `t65_squad_builder`;
+CREATE DATABASE `t65_squad_builder_test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `t65_squad_builder_test`;
 
 CREATE TABLE `color` (
-  `color_id` int NOT NULL,
-  `color_name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`color_id`)
+  `name` varchar(10) NOT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `action` (
-  `action_id` int NOT NULL,
-  `action_name` varchar(45) DEFAULT NULL,
-  `action_color` int DEFAULT NULL,
+  `id` int NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `color` varchar(10) DEFAULT NULL,
   `linked_action` int DEFAULT NULL,
-  PRIMARY KEY (`action_id`),
-  KEY `color_id_idx` (`action_color`),
-  KEY `action_id_idx` (`linked_action`),
-  CONSTRAINT `action_id` FOREIGN KEY (`linked_action`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `color_id` FOREIGN KEY (`action_color`) REFERENCES `color` (`color_id`)
+  PRIMARY KEY (`id`),
+  KEY `action_color_idx` (`color`),
+  KEY `action_linked_action_idx` (`linked_action`),
+  CONSTRAINT `action_color` FOREIGN KEY (`color`) REFERENCES `color` (`name`),
+  CONSTRAINT `action_linked_action` FOREIGN KEY (`linked_action`) REFERENCES `action` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `faction` (
-  `faction_id` int NOT NULL,
-  `faction_name` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`faction_id`)
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `upgrade_type` (
-  `upgrade_type_id` int NOT NULL,
-  `upgrade_type_name` varchar(60) DEFAULT NULL,
-  PRIMARY KEY (`upgrade_type_id`)
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `users` (
-  `user_id` int NOT NULL,
-  `username` varchar(45) NOT NULL,
-  PRIMARY KEY (`user_id`,`username`)
+  `username` varchar(15) NOT NULL,
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `ship_type` (
-  `ship_type_id` int NOT NULL,
-  `ship_type` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ship_type_id`)
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `size` (
-  `size_id` int NOT NULL,
-  `size_name` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`size_id`)
+  `name` varchar(10) NOT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `ship` (
-  `ship_id` int NOT NULL,
-  `faction_id` int DEFAULT NULL,
+  `id` int NOT NULL,
+  `faction` varchar(45) DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
-  `ship_type` int DEFAULT NULL,
+  `ship_type` varchar(45) DEFAULT NULL,
   `name_limit` int DEFAULT NULL,
   `call_sign` varchar(45) DEFAULT NULL,
   `front_arc` int DEFAULT NULL,
@@ -63,7 +57,7 @@ CREATE TABLE `ship` (
   `hull` int DEFAULT NULL,
   `shield` int DEFAULT NULL,
   `force` int DEFAULT NULL,
-  `ability_text` varchar(45) DEFAULT NULL,
+  `ability_text` varchar(300) DEFAULT NULL,
   `action_1` int DEFAULT NULL,
   `action_2` int DEFAULT NULL,
   `action_3` int DEFAULT NULL,
@@ -94,124 +88,123 @@ CREATE TABLE `ship` (
   `hyperspace_legal` tinyint DEFAULT NULL,
   `extended_legal` tinyint DEFAULT NULL,
   `dial_code` int DEFAULT NULL,
-  `size_id` int DEFAULT NULL,
+  `size` varchar(10) DEFAULT NULL,
   `initiative` int DEFAULT NULL,
-  PRIMARY KEY (`ship_id`),
-  KEY `faction_id_idx` (`faction_id`),
-  KEY `ship_type_id_idx` (`ship_type`),
-  KEY `action_id1_idx` (`action_1`),
-  KEY `action_id2_idx` (`action_2`),
-  KEY `action_id3_idx` (`action_3`),
-  KEY `action_id4_idx` (`action_4`),
-  KEY `size_id_idx` (`size_id`),
-  CONSTRAINT `action_id1_ship` FOREIGN KEY (`action_1`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `action_id2_ship` FOREIGN KEY (`action_2`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `action_id3_ship` FOREIGN KEY (`action_3`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `action_id4_ship` FOREIGN KEY (`action_4`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `faction_id_ship` FOREIGN KEY (`faction_id`) REFERENCES `faction` (`faction_id`),
-  CONSTRAINT `ship_type_id_ship` FOREIGN KEY (`ship_type`) REFERENCES `ship_type` (`ship_type_id`),
-  CONSTRAINT `size_id` FOREIGN KEY (`size_id`) REFERENCES `size` (`size_id`)
+  PRIMARY KEY (`id`),
+  KEY `ship_faction_idx` (`faction`),
+  KEY `ship_type_idx` (`ship_type`),
+  KEY `ship_action_1_idx` (`action_1`),
+  KEY `ship_action_2_idx` (`action_2`),
+  KEY `ship_action_3_idx` (`action_3`),
+  KEY `ship_action_4_idx` (`action_4`),
+  KEY `ship_size_idx` (`size`),
+  CONSTRAINT `ship_action_1` FOREIGN KEY (`action_1`) REFERENCES `action` (`id`),
+  CONSTRAINT `ship_action_2` FOREIGN KEY (`action_2`) REFERENCES `action` (`id`),
+  CONSTRAINT `ship_action_3` FOREIGN KEY (`action_3`) REFERENCES `action` (`id`),
+  CONSTRAINT `ship_action_4` FOREIGN KEY (`action_4`) REFERENCES `action` (`id`),
+  CONSTRAINT `ship_faction` FOREIGN KEY (`faction`) REFERENCES `faction` (`name`),
+  CONSTRAINT `ship_size` FOREIGN KEY (`size`) REFERENCES `size` (`name`),
+  CONSTRAINT `ship_type` FOREIGN KEY (`ship_type`) REFERENCES `ship_type` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `upgrade` (
-  `upgrade_id` int NOT NULL,
-  `faction_id` int DEFAULT NULL,
-  `name` varchar(45) DEFAULT NULL,
+  `id` int NOT NULL,
+  `faction` varchar(45) DEFAULT NULL,
+  `name` varchar(300) DEFAULT NULL,
   `name_limit` int DEFAULT NULL,
-  `ship_type` int DEFAULT NULL,
-  `upgrade_type` int DEFAULT NULL,
+  `ship_type` varchar(45) DEFAULT NULL,
+  `upgrade_type` varchar(45) DEFAULT NULL,
   `upgrade_text` varchar(300) DEFAULT NULL,
   `action_1` int DEFAULT NULL,
   `action_2` int DEFAULT NULL,
   `action_3` int DEFAULT NULL,
   `action_4` int DEFAULT NULL,
-  `flip_side_id` int DEFAULT NULL,
+  `flip_side` int DEFAULT NULL,
   `points_cost` int DEFAULT NULL,
   `hyperspace_legal` tinyint DEFAULT NULL,
   `extended_legal` tinyint DEFAULT NULL,
-  PRIMARY KEY (`upgrade_id`),
-  KEY `faction_id_idx` (`faction_id`),
-  KEY `ship_type_id_idx` (`ship_type`),
-  KEY `upgrade_type_id_idx` (`upgrade_type`),
-  KEY `action_id_idx` (`action_1`),
-  KEY `action_id2_idx` (`action_2`),
-  KEY `action_id3_idx` (`action_3`),
-  KEY `action_id4_idx` (`action_4`),
-  KEY `upgrade_id_idx` (`flip_side_id`),
-  CONSTRAINT `action_id1` FOREIGN KEY (`action_1`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `action_id2` FOREIGN KEY (`action_2`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `action_id3` FOREIGN KEY (`action_3`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `action_id4` FOREIGN KEY (`action_4`) REFERENCES `action` (`action_id`),
-  CONSTRAINT `faction_id` FOREIGN KEY (`faction_id`) REFERENCES `faction` (`faction_id`),
-  CONSTRAINT `ship_type_id` FOREIGN KEY (`ship_type`) REFERENCES `ship_type` (`ship_type_id`),
-  CONSTRAINT `upgrade_id` FOREIGN KEY (`flip_side_id`) REFERENCES `upgrade` (`upgrade_id`),
-  CONSTRAINT `upgrade_type_id` FOREIGN KEY (`upgrade_type`) REFERENCES `upgrade_type` (`upgrade_type_id`)
+  PRIMARY KEY (`id`),
+  KEY `upgrade_faction_idx` (`faction`),
+  KEY `upgrade_ship_type_idx` (`ship_type`),
+  KEY `upgrade_upgrade_type_idx` (`upgrade_type`),
+  KEY `upgrade_action_1_idx` (`action_1`),
+  KEY `upgrade_action_2_idx` (`action_2`),
+  KEY `upgrade_action_3_idx` (`action_3`),
+  KEY `upgrade_action_4_idx` (`action_4`),
+  KEY `upgrade_flip_side_idx` (`flip_side`),
+  CONSTRAINT `upgrade_action_1` FOREIGN KEY (`action_1`) REFERENCES `action` (`id`),
+  CONSTRAINT `upgrade_action_2` FOREIGN KEY (`action_2`) REFERENCES `action` (`id`),
+  CONSTRAINT `upgrade_action_3` FOREIGN KEY (`action_3`) REFERENCES `action` (`id`),
+  CONSTRAINT `upgrade_action_4` FOREIGN KEY (`action_4`) REFERENCES `action` (`id`),
+  CONSTRAINT `upgrade_faction` FOREIGN KEY (`faction`) REFERENCES `faction` (`name`),
+  CONSTRAINT `upgrade_flip_side` FOREIGN KEY (`flip_side`) REFERENCES `upgrade` (`id`),
+  CONSTRAINT `upgrade_ship_type` FOREIGN KEY (`ship_type`) REFERENCES `ship_type` (`name`),
+  CONSTRAINT `upgrade_upgrade_type` FOREIGN KEY (`upgrade_type`) REFERENCES `upgrade_type` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `inventory` (
-  `inventory_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
-  PRIMARY KEY (`inventory_id`),
-  KEY `user_id_idx` (`user_id`),
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  `id` int NOT NULL,
+  `username` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventory_username_idx` (`username`),
+  CONSTRAINT `inventory_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `ship_inventory` (
-  `ship_inventory_id` int NOT NULL,
-  `inventory_id` int DEFAULT NULL,
-  `ship_id` int DEFAULT NULL,
+  `id` int NOT NULL,
+  `inventory` int DEFAULT NULL,
+  `ship` int DEFAULT NULL,
   `quantity` int DEFAULT NULL,
-  PRIMARY KEY (`ship_inventory_id`),
-  KEY `inventory_id_idx` (`inventory_id`),
-  KEY `ship_id_idx` (`ship_id`),
-  CONSTRAINT `inventory_id` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`inventory_id`),
-  CONSTRAINT `ship_id` FOREIGN KEY (`ship_id`) REFERENCES `ship` (`ship_id`)
+  PRIMARY KEY (`id`),
+  KEY `ship_inventory_inventory_id_idx` (`inventory`),
+  KEY `ship_inventory_ship_idx` (`ship`),
+  CONSTRAINT `ship_inventory_inventory_id` FOREIGN KEY (`inventory`) REFERENCES `inventory` (`id`),
+  CONSTRAINT `ship_inventory_ship` FOREIGN KEY (`ship`) REFERENCES `ship` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `upgrade_inventory` (
-  `upgrade_inventory_id` int NOT NULL,
-  `inventory_id` int DEFAULT NULL,
-  `upgrade_id` int DEFAULT NULL,
+  `id` int NOT NULL,
+  `inventory` int DEFAULT NULL,
+  `upgrade` int DEFAULT NULL,
   `quantity` int DEFAULT NULL,
-  PRIMARY KEY (`upgrade_inventory_id`),
-  KEY `inventory_id_upgrade_idx` (`inventory_id`),
-  KEY `upgrade_id_inventory_idx` (`upgrade_id`),
-  CONSTRAINT `inventory_id_upgrade` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`inventory_id`),
-  CONSTRAINT `upgrade_id_inventory` FOREIGN KEY (`upgrade_id`) REFERENCES `upgrade` (`upgrade_id`)
+  PRIMARY KEY (`id`),
+  KEY `upgrade_inventory_inventory_id_idx` (`inventory`),
+  KEY `upgrade_inventory_upgrade_idx` (`upgrade`),
+  CONSTRAINT `upgrade_inventory_inventory_id` FOREIGN KEY (`inventory`) REFERENCES `inventory` (`id`),
+  CONSTRAINT `upgrade_inventory_upgrade` FOREIGN KEY (`upgrade`) REFERENCES `upgrade` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `squad` (
-  `squad_id` int NOT NULL,
-  `user_id` int DEFAULT NULL,
-  `squad_name` varchar(60) DEFAULT NULL,
-  `faction_id` int DEFAULT NULL,
-  `linked_to` int DEFAULT NULL,
+  `id` int NOT NULL,
+  `username` varchar(15) DEFAULT NULL,
+  `squad_name` varchar(45) DEFAULT NULL,
+  `faction` varchar(45) DEFAULT NULL,
   `total_points` int DEFAULT NULL,
-  PRIMARY KEY (`squad_id`),
-  KEY `user_id_squad_idx` (`user_id`),
-  KEY `faction_id_squad_idx` (`faction_id`),
-  KEY `linked_to_idx` (`linked_to`),
-  CONSTRAINT `faction_id_squad` FOREIGN KEY (`faction_id`) REFERENCES `faction` (`faction_id`),
-  CONSTRAINT `linked_to` FOREIGN KEY (`linked_to`) REFERENCES `ship` (`ship_id`),
-  CONSTRAINT `user_id_squad` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  PRIMARY KEY (`id`),
+  KEY `squad_username_idx` (`username`),
+  KEY `squad_faction_idx` (`faction`),
+  CONSTRAINT `squad_faction` FOREIGN KEY (`faction`) REFERENCES `faction` (`name`),
+  CONSTRAINT `squad_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `squad_ships` (
-  `squad_ships_id` int NOT NULL,
-  `squad_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `ship_id` int DEFAULT NULL,
-  `faction_id` int DEFAULT NULL,
-  PRIMARY KEY (`squad_ships_id`),
-  KEY `squad_id_idx` (`squad_id`),
-  KEY `user_id_squad_ship_idx` (`user_id`),
-  KEY `faction_id_squad_ship_idx` (`faction_id`),
-  KEY `ship_id_squad_idx` (`ship_id`),
-  CONSTRAINT `faction_id_squad_ship` FOREIGN KEY (`faction_id`) REFERENCES `faction` (`faction_id`),
-  CONSTRAINT `ship_id_squad` FOREIGN KEY (`ship_id`) REFERENCES `ship` (`ship_id`),
-  CONSTRAINT `squad_id` FOREIGN KEY (`squad_id`) REFERENCES `squad` (`squad_id`),
-  CONSTRAINT `user_id_squad_ship` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+CREATE TABLE `squad_ship` (
+  `id` int NOT NULL,
+  `squad` int DEFAULT NULL,
+  `ship` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `squad_ship_squad_idx` (`squad`),
+  KEY `squad_ship_ship_idx` (`ship`),
+  CONSTRAINT `squad_ship_ship` FOREIGN KEY (`ship`) REFERENCES `ship` (`id`),
+  CONSTRAINT `squad_ship_squad` FOREIGN KEY (`squad`) REFERENCES `squad` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
-
+CREATE TABLE `squad_upgrade` (
+  `id` int NOT NULL,
+  `squad_ship` int DEFAULT NULL,
+  `upgrade` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `squad_upgrade_squad_ship_idx` (`squad_ship`),
+  KEY `squad_upgrade_upgrade_idx` (`upgrade`),
+  CONSTRAINT `squad_upgrade_squad_ship` FOREIGN KEY (`squad_ship`) REFERENCES `squad_ship` (`id`),
+  CONSTRAINT `squad_upgrade_upgrade` FOREIGN KEY (`upgrade`) REFERENCES `upgrade` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
