@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,48 +26,41 @@ import java.util.List;
 @Slf4j
 public class GameDataHarvester {
 
-    private URI dataRepoUri;
-
-    private Path dataRepoLocation;
-
-    private String actionsPath;
-    private String factionsPath;
-    private String pilotsPath;
-    private String ffgXwsPath;
-    private ObjectMapper mapper;
+    @Autowired
+    private GameDataHarvesterConfiguration config;
 
     public void cloneDataRepo() throws Exception {
-        if (dataRepoLocation.toFile().exists()) {
-            new Git(new FileRepository(dataRepoLocation.toFile())).pull();
+        if (config.dataRepoLocation.toFile().exists()) {
+            new Git(new FileRepository(config.dataRepoLocation.toFile())).pull();
         } else {
-            Git.cloneRepository().setURI(dataRepoUri.toString()).setDirectory(dataRepoLocation.toFile()).call();
+            Git.cloneRepository().setURI(config.dataRepoUri.toString()).setDirectory(config.dataRepoLocation.toFile()).call();
         }
     }
 
     public List<Faction> readFactions() throws Exception {
-        Path factionFilePath = Paths.get(dataRepoLocation.toString(), factionsPath);
-        List<Faction> factions = mapper.treeToValue(mapper.readTree(factionFilePath.toFile()), List.class);
+        Path factionFilePath = Paths.get(config.dataRepoLocation.toString(), config.factionsPath.toString());
+        List<Faction> factions = config.mapper.treeToValue(config.mapper.readTree(factionFilePath.toFile()), List.class);
         return factions;
     }
 
     public List<Action> readActions() throws Exception {
-        Path actionFilePath = Paths.get(dataRepoLocation.toString(), actionsPath);
-        List<Action> actions = mapper.treeToValue(mapper.readTree(actionFilePath.toFile()), List.class);
+        Path actionFilePath = Paths.get(config.dataRepoLocation.toString(), config.actionsPath.toString());
+        List<Action> actions = config.mapper.treeToValue(config.mapper.readTree(actionFilePath.toFile()), List.class);
         return actions;
     }
 
     public List<Ship> readShips() throws Exception {
-        File shipDir = Paths.get(dataRepoLocation.toString(), pilotsPath).toFile();
+        File shipDir = Paths.get(config.dataRepoLocation.toString(), config.pilotsPath.toString()).toFile();
         if (shipDir.isDirectory()) {
             List<Ship> ships = new ArrayList<>();
             for (File subdir : shipDir.listFiles()) {
                 if (subdir.isDirectory()) {
                     for (File file : subdir.listFiles()) {
-                        List<Ship> factionList = mapper.treeToValue(mapper.readTree(file), ships.getClass());
+                        List<Ship> factionList = config.mapper.treeToValue(config.mapper.readTree(file), ships.getClass());
                         ships.addAll(factionList);
                     }
                 } else {
-                    List<Ship> factionList = mapper.treeToValue(mapper.readTree(subdir), ships.getClass());
+                    List<Ship> factionList = config.mapper.treeToValue(config.mapper.readTree(subdir), ships.getClass());
                     ships.addAll(factionList);
                 }
             }
@@ -74,4 +68,16 @@ public class GameDataHarvester {
         }
         return Collections.emptyList();
     }
+
+    @Data
+    public static class GameDataHarvesterConfiguration {
+        private URI dataRepoUri;
+        private Path dataRepoLocation;
+        private Path actionsPath;
+        private Path factionsPath;
+        private Path pilotsPath;
+        private Path ffgXwsPath;
+        private ObjectMapper mapper;
+    }
+
 }
