@@ -30,7 +30,8 @@ public class Properties {
         private String dataRepoLocation;
         private String actionsPath;
         private String factionsPath;
-        private String pilotsPath;
+        private String pilotsDir;
+        private String upgradesDir;
         private String ffgXwsPath;
     }
 }

@@ -1,5 +1,8 @@
 package com.tcashcroft.t65;
 
+import com.tcashcroft.t65.harvester.GameDataHarvester;
+import edu.byu.hbll.json.ObjectMapperFactory;
+import edu.byu.hbll.json.UncheckedObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
@@ -38,22 +41,45 @@ public class Configuration {
     }
 
     @Bean
-    public String actionsPath() {
-        return properties.getHarvester().getXwingData2().getActionsPath();
+    public Path actionsPath() {
+        return Paths.get(properties.getHarvester().getXwingData2().getActionsPath());
     }
 
     @Bean
-    public String factionsPath() {
-        return properties.getHarvester().getXwingData2().getFactionsPath();
+    public Path factionsPath() {
+        return Paths.get(properties.getHarvester().getXwingData2().getFactionsPath());
     }
 
     @Bean
-    public String pilotsPath() {
-        return properties.getHarvester().getXwingData2().getPilotsPath();
+    public Path pilotsDir() {
+        return Paths.get(properties.getHarvester().getXwingData2().getPilotsDir());
     }
 
     @Bean
-    public String ffgXwsPath() {
-        return properties.getHarvester().getXwingData2().getFfgXwsPath();
+    public Path upgradesDir() {
+        return Paths.get(properties.getHarvester().getXwingData2().getUpgradesDir());
+    }
+
+    @Bean
+    public Path ffgXwsPath() {
+        return Paths.get(properties.getHarvester().getXwingData2().getFfgXwsPath());
+    }
+
+    @Bean
+    public UncheckedObjectMapper mapper() {
+        return ObjectMapperFactory.newUnchecked();
+    }
+
+    @Bean
+    public GameDataHarvester.GameDataHarvesterConfiguration gameDataHarvesterConfiguration() {
+        GameDataHarvester.GameDataHarvesterConfiguration config = new GameDataHarvester.GameDataHarvesterConfiguration();
+        config.setDataRepoUri(dataRepoUri());
+        config.setDataRepoLocation(dataRepoLocation());
+        config.setActionsPath(actionsPath());
+        config.setFactionsPath(factionsPath());
+        config.setPilotsPath(pilotsDir());
+        config.setFfgXwsPath(ffgXwsPath());
+        config.setMapper(mapper());
+        return config;
     }
 }
