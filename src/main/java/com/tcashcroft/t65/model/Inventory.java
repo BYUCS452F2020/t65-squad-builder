@@ -6,8 +6,8 @@ import java.util.List;
 
 @Data
 public class Inventory {
-    private String inventoryId;
-    private String userId;
+    private String id;
+    private String username;
     private List<Ship> ships;
     private List<Upgrade> upgrades;
 }

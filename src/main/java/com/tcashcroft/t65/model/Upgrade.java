@@ -6,32 +6,43 @@ import lombok.Data;
 public class Upgrade {
 
     public enum UpgradeType {
-        ASTROMECH,
-        CANNON,
-        CONFIGURATION,
-        CREW,
-        FORCE,
-        GUNNER,
-        HYPERDRIVE,
-        ILLICIT,
-        MODIFICAITON,
-        MISSILE,
-        PAYLOAD,
-        SENSOR,
-        TACTICAL_RELAY,
-        TALENT,
-        TECH,
-        TITLE,
-        TORPEDO,
-        TURRET
+        ASTROMECH("ASTROMECH"),
+        CANNON("CANNON"),
+        CONFIGURATION("CONFIGURATION"),
+        CREW("CREW"),
+        FORCE("FORCE"),
+        GUNNER("GUNNER"),
+        HYPERDRIVE("HYPERDRIVE"),
+        ILLICIT("ILLICIT"),
+        MODIFICAITON("MODIFICATION"),
+        MISSILE("MISSILE"),
+        PAYLOAD("PAYLOAD"),
+        SENSOR("SENSOR"),
+        TACTICAL_RELAY("TACTICAL_RELAY"),
+        TALENT("TALENT"),
+        TECH("TECH"),
+        TITLE("TITLE"),
+        TORPEDO("TORPEDO"),
+        TURRET("TURRET");
+
+        private String value;
+
+        UpgradeType(String value) {
+            this.value = value.toUpperCase();
+        }
+
+        public String getValue() {
+            return value;
+        }
     };
 
-    private String upgradeId;
+    private String id;
     private Utils.Faction faction;
     private String name;
     private int nameLimit;
     private Ship.ShipType shipType;
     private UpgradeType upgradeType;
+    private String upgradeText;
     private Action action1;
     private Action action2;
     private Action action3;

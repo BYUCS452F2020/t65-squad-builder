@@ -7,8 +7,8 @@ import java.util.Map;
 
 @Data
 public class Squad {
-    private String squadId;
-    private String userId;
+    private String id;
+    private String username;
     private Utils.Faction faction;
     private Map<Ship, List<Upgrade>> shipsAndUpgrades;
     private int totalPoints;
