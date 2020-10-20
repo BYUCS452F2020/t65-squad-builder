@@ -1,12 +1,12 @@
-CREATE DATABASE `t65_squad_builder_test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `t65_squad_builder_test`;
+-- CREATE DATABASE `t65_squad_builder_test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+-- USE `t65_squad_builder_test`;
 
-CREATE TABLE `color` (
+CREATE TABLE IF NOT EXISTS `color` (
   `name` varchar(10) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `action` (
+CREATE TABLE IF NOT EXISTS `action` (
   `id` int NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `color` varchar(10) DEFAULT NULL,
@@ -18,32 +18,32 @@ CREATE TABLE `action` (
   CONSTRAINT `action_linked_action` FOREIGN KEY (`linked_action`) REFERENCES `action` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `faction` (
+CREATE TABLE IF NOT EXISTS `faction` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `upgrade_type` (
+CREATE TABLE IF NOT EXISTS `upgrade_type` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(15) NOT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `ship_type` (
+CREATE TABLE IF NOT EXISTS `ship_type` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `size` (
+CREATE TABLE IF NOT EXISTS `size` (
   `name` varchar(10) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `ship` (
+CREATE TABLE IF NOT EXISTS `ship` (
   `id` int NOT NULL,
   `faction` varchar(45) DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE `ship` (
   CONSTRAINT `ship_type` FOREIGN KEY (`ship_type`) REFERENCES `ship_type` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `upgrade` (
+CREATE TABLE IF NOT EXISTS `upgrade` (
   `id` int NOT NULL,
   `faction` varchar(45) DEFAULT NULL,
   `name` varchar(300) DEFAULT NULL,
@@ -142,15 +142,15 @@ CREATE TABLE `upgrade` (
   CONSTRAINT `upgrade_upgrade_type` FOREIGN KEY (`upgrade_type`) REFERENCES `upgrade_type` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `inventory` (
-  `id` int NOT NULL,
+CREATE TABLE IF NOT EXISTS `inventory` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `inventory_username_idx` (`username`),
   CONSTRAINT `inventory_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `ship_inventory` (
+CREATE TABLE IF NOT EXISTS `ship_inventory` (
   `id` int NOT NULL,
   `inventory` int DEFAULT NULL,
   `ship` int DEFAULT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE `ship_inventory` (
   CONSTRAINT `ship_inventory_ship` FOREIGN KEY (`ship`) REFERENCES `ship` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `upgrade_inventory` (
+CREATE TABLE IF NOT EXISTS `upgrade_inventory` (
   `id` int NOT NULL,
   `inventory` int DEFAULT NULL,
   `upgrade` int DEFAULT NULL,
@@ -174,7 +174,7 @@ CREATE TABLE `upgrade_inventory` (
   CONSTRAINT `upgrade_inventory_upgrade` FOREIGN KEY (`upgrade`) REFERENCES `upgrade` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `squad` (
+CREATE TABLE IF NOT EXISTS `squad` (
   `id` int NOT NULL,
   `username` varchar(15) DEFAULT NULL,
   `squad_name` varchar(45) DEFAULT NULL,
@@ -187,7 +187,7 @@ CREATE TABLE `squad` (
   CONSTRAINT `squad_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `squad_ship` (
+CREATE TABLE IF NOT EXISTS `squad_ship` (
   `id` int NOT NULL,
   `squad` int DEFAULT NULL,
   `ship` int DEFAULT NULL,
@@ -198,7 +198,7 @@ CREATE TABLE `squad_ship` (
   CONSTRAINT `squad_ship_squad` FOREIGN KEY (`squad`) REFERENCES `squad` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `squad_upgrade` (
+CREATE TABLE IF NOT EXISTS `squad_upgrade` (
   `id` int NOT NULL,
   `squad_ship` int DEFAULT NULL,
   `upgrade` int DEFAULT NULL,
