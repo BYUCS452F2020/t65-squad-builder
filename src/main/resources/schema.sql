@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS `color` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `action` (
-  `id` int NOT NULL,
+  `id` varchar(36) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `color` varchar(10) DEFAULT NULL,
-  `linked_action` int DEFAULT NULL,
+  `linked_action` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `action_color_idx` (`color`),
   KEY `action_linked_action_idx` (`linked_action`),
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `size` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `ship` (
-  `id` int NOT NULL,
+  `id` varchar(36) NOT NULL,
   `faction` varchar(45) DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
   `ship_type` varchar(45) DEFAULT NULL,
@@ -58,10 +58,10 @@ CREATE TABLE IF NOT EXISTS `ship` (
   `shield` int DEFAULT NULL,
   `force` int DEFAULT NULL,
   `ability_text` varchar(300) DEFAULT NULL,
-  `action_1` int DEFAULT NULL,
-  `action_2` int DEFAULT NULL,
-  `action_3` int DEFAULT NULL,
-  `action_4` int DEFAULT NULL,
+  `action_1` varchar(36) DEFAULT NULL,
+  `action_2` varchar(36) DEFAULT NULL,
+  `action_3` varchar(36) DEFAULT NULL,
+  `action_4` varchar(36) DEFAULT NULL,
   `astromech_upgrades` int DEFAULT NULL,
   `cannon_upgrades` int DEFAULT NULL,
   `cargo_upgrades` int DEFAULT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `ship` (
   `points_cost` int DEFAULT NULL,
   `hyperspace_legal` tinyint DEFAULT NULL,
   `extended_legal` tinyint DEFAULT NULL,
-  `dial_code` int DEFAULT NULL,
+  `dial_code` varchar(45) DEFAULT NULL,
   `size` varchar(10) DEFAULT NULL,
   `initiative` int DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -108,18 +108,18 @@ CREATE TABLE IF NOT EXISTS `ship` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `upgrade` (
-  `id` int NOT NULL,
+  `id` varchar(36) NOT NULL,
   `faction` varchar(45) DEFAULT NULL,
   `name` varchar(300) DEFAULT NULL,
   `name_limit` int DEFAULT NULL,
   `ship_type` varchar(45) DEFAULT NULL,
   `upgrade_type` varchar(45) DEFAULT NULL,
   `upgrade_text` varchar(300) DEFAULT NULL,
-  `action_1` int DEFAULT NULL,
-  `action_2` int DEFAULT NULL,
-  `action_3` int DEFAULT NULL,
-  `action_4` int DEFAULT NULL,
-  `flip_side` int DEFAULT NULL,
+  `action_1` varchar(36) DEFAULT NULL,
+  `action_2` varchar(36) DEFAULT NULL,
+  `action_3` varchar(36) DEFAULT NULL,
+  `action_4` varchar(36) DEFAULT NULL,
+  `flip_side` varchar(36) DEFAULT NULL,
   `points_cost` int DEFAULT NULL,
   `hyperspace_legal` tinyint DEFAULT NULL,
   `extended_legal` tinyint DEFAULT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `upgrade` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `inventory` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` varchar(36) NOT NULL,
   `username` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `inventory_username_idx` (`username`),
@@ -151,9 +151,9 @@ CREATE TABLE IF NOT EXISTS `inventory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `ship_inventory` (
-  `id` int NOT NULL,
-  `inventory` int DEFAULT NULL,
-  `ship` int DEFAULT NULL,
+  `id` varchar(36) NOT NULL,
+  `inventory` varchar(36) DEFAULT NULL,
+  `ship` varchar(36) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ship_inventory_inventory_id_idx` (`inventory`),
@@ -163,9 +163,9 @@ CREATE TABLE IF NOT EXISTS `ship_inventory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `upgrade_inventory` (
-  `id` int NOT NULL,
-  `inventory` int DEFAULT NULL,
-  `upgrade` int DEFAULT NULL,
+  `id` varchar(36) NOT NULL,
+  `inventory` varchar(36) DEFAULT NULL,
+  `upgrade` varchar(36) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `upgrade_inventory_inventory_id_idx` (`inventory`),
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `upgrade_inventory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `squad` (
-  `id` int NOT NULL,
+  `id` varchar(36) NOT NULL,
   `username` varchar(15) DEFAULT NULL,
   `squad_name` varchar(45) DEFAULT NULL,
   `faction` varchar(45) DEFAULT NULL,
@@ -188,9 +188,9 @@ CREATE TABLE IF NOT EXISTS `squad` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `squad_ship` (
-  `id` int NOT NULL,
-  `squad` int DEFAULT NULL,
-  `ship` int DEFAULT NULL,
+  `id` varchar(36) NOT NULL,
+  `squad` varchar(36) DEFAULT NULL,
+  `ship` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `squad_ship_squad_idx` (`squad`),
   KEY `squad_ship_ship_idx` (`ship`),
@@ -199,9 +199,9 @@ CREATE TABLE IF NOT EXISTS `squad_ship` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `squad_upgrade` (
-  `id` int NOT NULL,
-  `squad_ship` int DEFAULT NULL,
-  `upgrade` int DEFAULT NULL,
+  `id` varchar(36) NOT NULL,
+  `squad_ship` varchar(36) DEFAULT NULL,
+  `upgrade` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `squad_upgrade_squad_ship_idx` (`squad_ship`),
   KEY `squad_upgrade_upgrade_idx` (`upgrade`),
