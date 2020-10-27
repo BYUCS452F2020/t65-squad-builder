@@ -1,0 +1,4 @@
+
+# Outstanding TODO items:
+
+Change ID generation from UUID to something calculable for each model object
