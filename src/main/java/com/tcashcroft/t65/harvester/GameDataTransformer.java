@@ -11,6 +11,7 @@ import edu.byu.hbll.json.UncheckedObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Component;
@@ -49,25 +50,33 @@ public abstract class GameDataTransformer {
 
     public List<Faction> harvestFactions() {
         List<Faction> factions = new ArrayList<>();
-        factions = mapper.readValue(Paths.get(dataRepoLocation.toString(), factionsPath.toString()).toFile(), factions.getClass());
+//        factions = mapper.readValue(Paths.get(dataRepoLocation.toString(), factionsPath.toString()).toFile(), factions.getClass());
+        for (JsonNode n : mapper.readTree(Paths.get(dataRepoLocation.toString(), factionsPath.toString()).toFile())) {
+            Faction f = mapper.treeToValue(n, Faction.class);
+            factions.add(f);
+        }
         return factions;
     }
 
     public List<Action> harvestActions() {
         List<Action> actions = new ArrayList<>();
-        actions = mapper.readValue(Paths.get(dataRepoLocation.toString(), actionsPath.toString()).toFile(), actions.getClass());
+//        actions = mapper.readValue(Paths.get(dataRepoLocation.toString(), actionsPath.toString()).toFile(), actions.getClass());
+        for (JsonNode n : mapper.readTree(Paths.get(dataRepoLocation.toString(), actionsPath.toString()).toFile())) {
+            Action a = mapper.treeToValue(n, Action.class);
+            actions.add(a);
+        }
         return actions;
     }
 
     public List<Ship> harvestShips() {
         List<Ship> ships = new ArrayList<>();
         for (File subDir : Paths.get(dataRepoLocation.toString(), pilotsDir.toString()).toFile().listFiles()) {
-            String faction = subDir.getName().toLowerCase();
+            String faction = subDir.getName().toUpperCase();
             for (File shipFile : subDir.listFiles()) {
-                String shipType = shipFile.getName();
+                String shipType = FilenameUtils.getBaseName(shipFile.getName()).replaceAll("-", "_");
                 log.info("Parsing " + faction + " " + shipType);
                 Ship ship = mapper.readValue(shipFile, Ship.class);
-                ship.setType(shipType.toLowerCase());
+                ship.setType(shipType.toUpperCase());
                 ships.add(ship);
             }
         }
@@ -77,7 +86,7 @@ public abstract class GameDataTransformer {
     public List<Upgrade> harvestUpgrades() {
         List<Upgrade> upgrades = new ArrayList<>();
         for (File upgradeFile : Paths.get(dataRepoLocation.toString(), upgradesDir.toString()).toFile().listFiles()) {
-            String upgradeType = upgradeFile.getName().toLowerCase();
+            String upgradeType = FilenameUtils.getBaseName(upgradeFile.getName()).toUpperCase().replaceAll("-", "_");
             log.info("Parsing upgrades " + upgradeType);
             List<Upgrade> sublist = new ArrayList<>();
             JsonNode upgradeData = mapper.readValue(upgradeFile, ArrayNode.class);
@@ -92,7 +101,7 @@ public abstract class GameDataTransformer {
     }
 
     public List<String> generateSizeList(List<Ship> ships) {
-        return ships.stream().map(Ship::getSize).map(String::toLowerCase).distinct().collect(Collectors.toList());
+        return ships.stream().map(Ship::getSize).map(String::toUpperCase).distinct().collect(Collectors.toList());
     }
 
     public List<String> generateShipTypeList(List<Ship> ships) {
@@ -107,7 +116,7 @@ public abstract class GameDataTransformer {
                 colors.add(m.getLinked().getDifficulty());
             }
             return colors.stream();
-        }).filter(Objects::nonNull).map(String::toLowerCase).distinct().collect(Collectors.toList());
+        }).filter(Objects::nonNull).map(String::toUpperCase).distinct().collect(Collectors.toList());
         List<String> upgradeColors = ships.stream().flatMap(u -> u.getActions().stream()).flatMap(m -> {
             List<String> colors = new ArrayList<>();
             colors.add(m.getDifficulty());
@@ -115,14 +124,17 @@ public abstract class GameDataTransformer {
                 colors.add(m.getLinked().getDifficulty());
             }
             return colors.stream();
-        }).filter(Objects::nonNull).map(String::toLowerCase).distinct().collect(Collectors.toList());
+        }).filter(Objects::nonNull).map(String::toUpperCase).distinct().collect(Collectors.toList());
         Set<String> colorSet = new HashSet<>();
         colorSet.addAll(shipColors);
+        log.info("Ship Colors: {}", shipColors);
         colorSet.addAll(upgradeColors);
+        log.info("Upgrade Colors: {}", upgradeColors);
+        colorSet.add("WHITE"); // TODO parse game data better to get white
         return colorSet.stream().collect(Collectors.toList());
     }
 
     public List<String> generateUpgradeType(List<Upgrade> upgrades) {
-        return upgrades.stream().map(Upgrade::getType).map(String::toLowerCase).distinct().collect(Collectors.toList());
+        return upgrades.stream().map(Upgrade::getType).map(String::toUpperCase).distinct().collect(Collectors.toList());
     }
 }
