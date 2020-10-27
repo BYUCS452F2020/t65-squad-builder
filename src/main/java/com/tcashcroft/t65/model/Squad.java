@@ -10,6 +10,11 @@ public class Squad {
     private String id;
     private String username;
     private Utils.Faction faction;
-    private Map<Ship, List<Upgrade>> shipsAndUpgrades;
+    private String name;
+
+    private List<SquadShip> ships;
+    private Map<String, List<SquadUpgrade>> shipIdToUpgrade;
+
+//    private Map<Ship, List<Upgrade>> shipsAndUpgrades;
     private int totalPoints;
 }

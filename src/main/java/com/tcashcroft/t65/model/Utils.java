@@ -2,18 +2,18 @@ package com.tcashcroft.t65.model;
 
 public class Utils {
     public enum Faction {
-        REBEL_ALLIANCE("rebel alliance"),
-        GALACTIC_EMPIRE("galactic empire"),
-        SCUM_AND_VILLAINY("scum and villainy"),
-        RESISTANCE("resistance"),
-        FIRST_ORDER("first order"),
-        GALACTIC_REPUBLIC("galactic republic"),
-        SEPARATIST_ALLIANCE("separatist alliance");
+        REBEL_ALLIANCE("REBEL_ALLIANCE"),
+        GALACTIC_EMPIRE("GALACTIC_EMPIRE"),
+        SCUM_AND_VILLAINY("SCUM_AND_VILLAINY"),
+        RESISTANCE("RESISTANCE"),
+        FIRST_ORDER("FIRST_ORDER"),
+        GALACTIC_REPUBLIC("GALACTIC_REPUBLIC"),
+        SEPARATIST_ALLIANCE("SEPARATIST_ALLIANCE");
 
         private String value;
 
         Faction(String value) {
-            this.value = value.toLowerCase();
+            this.value = value.toUpperCase();
         }
 
         public String getValue() {
