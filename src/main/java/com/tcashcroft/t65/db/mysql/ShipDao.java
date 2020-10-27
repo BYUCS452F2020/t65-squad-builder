@@ -38,10 +38,16 @@ public class ShipDao {
             return;
         }
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO ship Value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,)");
+            log.info("Attempting to insert ship {}", ship.getName());
+            log.info("{}", ship);
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO ship Value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             int i = 1;
             statement.setString(i++, ship.getId());
-            statement.setString(i++, ship.getFaction().getValue());
+            if (ship.getFaction() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, ship.getFaction().getValue());
+            }
             statement.setString(i++, ship.getName());
             statement.setString(i++, ship.getShipType().getValue());
             statement.setInt(i++, ship.getNameLimit());
@@ -54,10 +60,31 @@ public class ShipDao {
             statement.setInt(i++, ship.getShield());
             statement.setInt(i++, ship.getForce());
             statement.setString(i++, ship.getAbilityText());
-            statement.setString(i++, ship.getAction1().getId());
-            statement.setString(i++, ship.getAction2().getId());
-            statement.setString(i++, ship.getAction3().getId());
-            statement.setString(i++, ship.getAction4().getId());
+
+            if (ship.getAction1() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, ship.getAction1().getId());
+            }
+
+            if (ship.getAction2() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, ship.getAction2().getId());
+            }
+
+            if (ship.getAction3() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, ship.getAction3().getId());
+            }
+
+            if (ship.getAction4() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, ship.getAction4().getId());
+            }
+
             statement.setInt(i++, ship.getAstromechUpgrades());
             statement.setInt(i++, ship.getCannonUpgrades());
             statement.setInt(i++, ship.getCargoUpgrades());

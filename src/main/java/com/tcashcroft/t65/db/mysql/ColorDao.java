@@ -47,7 +47,7 @@ public class ColorDao {
                 if (colorValue.isEmpty()) {
                     return Optional.empty();
                 }
-                return Optional.of(Action.Color.valueOf(colorValue));
+                return Optional.of(Action.Color.valueOf(colorValue.toUpperCase()));
             } else return Optional.empty();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);

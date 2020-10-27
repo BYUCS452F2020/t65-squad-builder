@@ -28,6 +28,7 @@ public class FactionDao {
         }
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO faction Value (?)");
+            log.info("Faction: {}", faction.getValue());
             statement.setString(1, faction.getValue());
             int affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
@@ -46,7 +47,7 @@ public class FactionDao {
                 if (factionValue.isEmpty()) {
                     return Optional.empty();
                 }
-                return Optional.of(Utils.Faction.valueOf(factionValue));
+                return Optional.of(Utils.Faction.valueOf(factionValue.toUpperCase()));
            } else return Optional.empty();
        } catch (SQLException e) {
            log.error(e.getMessage(), e);

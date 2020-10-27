@@ -11,7 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,26 +35,107 @@ public class UpgradeDao {
     @Autowired
     ActionDao actionDao;
 
+
+    public void createFlipSideUpgrades(List<Upgrade> upgrades) {
+        // TODO handle inserting flip-side ID upgrades
+        List<Upgrade> upgradesSansFlipSideId = upgrades.stream().map(u -> {
+            Upgrade upgrade = new Upgrade();
+            upgrade.setId(u.getId());
+            upgrade.setFaction(u.getFaction());
+            upgrade.setName(u.getName());
+            upgrade.setNameLimit(u.getNameLimit());
+            upgrade.setShipType(u.getShipType());
+            upgrade.setUpgradeType(u.getUpgradeType());
+            upgrade.setUpgradeText(u.getUpgradeText());
+            upgrade.setAction1(u.getAction1());
+            upgrade.setAction2(u.getAction2());
+            upgrade.setAction3(u.getAction3());
+            upgrade.setAction4(u.getAction4());
+            upgrade.setPointsCost(u.getPointsCost());
+            upgrade.setHyperspaceLegal(u.isHyperspaceLegal());
+            upgrade.setExtendedLegal(u.isExtendedLegal());
+            return upgrade;
+        }).collect(Collectors.toList());
+
+        for (Upgrade u : upgradesSansFlipSideId) {
+            createUpgrade(u);
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            boolean autoCommitSetting = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+            for (Upgrade u : upgrades) {
+                PreparedStatement statement = connection.prepareStatement("UPDATE upgrade SET flip_side = ? WHERE id = ?");
+                int i = 1;
+                statement.setString(i++, u.getFlipSideId());
+                statement.setString(i++, u.getId());
+                int rowsAffected = statement.executeUpdate();
+                log.info("Updated {} rows setting upgrade flip side id", rowsAffected);
+            }
+            connection.commit();
+            connection.setAutoCommit(autoCommitSetting);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public void createUpgrade(Upgrade upgrade) {
         if (readUpgrade(upgrade.getId()).isPresent()) {
             // value already exists in DB
             return;
         }
         try (Connection connection = dataSource.getConnection()) {
+            log.info("Attempting to insert upgrade {}", upgrade.getName());
+            log.info("{}", upgrade);
             PreparedStatement statement = connection.prepareStatement("INSERT INTO upgrade Value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             int i = 1;
             statement.setString(i++, upgrade.getId());
-            statement.setString(i++, upgrade.getFaction().getValue());
+
+            if (upgrade.getFaction() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, upgrade.getFaction().getValue());
+            }
+
             statement.setString(i++, upgrade.getName());
             statement.setInt(i++, upgrade.getNameLimit());
-            statement.setString(i++, upgrade.getShipType().getValue());
+
+            if (upgrade.getShipType() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, upgrade.getShipType().getValue());
+            }
+
             statement.setString(i++, upgrade.getUpgradeType().getValue());
             statement.setString(i++, upgrade.getUpgradeText());
-            statement.setString(i++, upgrade.getAction1().getId());
-            statement.setString(i++, upgrade.getAction2().getId());
-            statement.setString(i++, upgrade.getAction3().getId());
-            statement.setString(i++, upgrade.getAction4().getId());
+
+            if (upgrade.getAction1() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, upgrade.getAction1().getId());
+            }
+
+            if (upgrade.getAction2() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, upgrade.getAction2().getId());
+            }
+
+            if (upgrade.getAction3() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, upgrade.getAction3().getId());
+            }
+
+            if (upgrade.getAction4() == null) {
+                statement.setString(i++, null);
+            } else {
+                statement.setString(i++, upgrade.getAction4().getId());
+            }
+
             statement.setString(i++, upgrade.getFlipSideId());
             statement.setInt(i++, upgrade.getPointsCost());
             statement.setBoolean(i++, upgrade.isHyperspaceLegal());
@@ -71,8 +154,8 @@ public class UpgradeDao {
     }
 
     private Optional<Upgrade> readUpgrade(String upgradeId, int recurse) {
-        try (Connection connection = dataSource.getConnection()){
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM upgrade WHERE upgrade_id = ?");
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM upgrade WHERE id = ?");
 
             statement.setString(1, upgradeId);
             ResultSet rs = statement.executeQuery();

@@ -73,4 +73,22 @@ public class InventoryDao {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteInventory(String id, boolean isUsername) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql;
+            if (isUsername) {
+                sql = "DELETE FROM inventory WHERE username = ?";
+            } else {
+                sql = "DELETE FROM inventory WHERE id = ?";
+            }
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, id);
+            int affectedRows = statement.executeUpdate();
+            log.info("Delete from inventory affected {} rows", affectedRows);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
 }

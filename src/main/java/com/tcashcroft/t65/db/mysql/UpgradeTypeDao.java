@@ -48,7 +48,7 @@ public class UpgradeTypeDao {
                 if (upgradeTypeValue.isEmpty()) {
                     return Optional.empty();
                 }
-                return Optional.of(Upgrade.UpgradeType.valueOf(upgradeTypeValue));
+                return Optional.of(Upgrade.UpgradeType.valueOf(upgradeTypeValue.toUpperCase()));
             } else return Optional.empty();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);

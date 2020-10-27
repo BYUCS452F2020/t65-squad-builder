@@ -47,7 +47,7 @@ public class ShipTypeDao {
                 if (shipTypeValue.isEmpty()) {
                     return Optional.empty();
                 }
-                return Optional.of(Ship.ShipType.valueOf(shipTypeValue));
+                return Optional.of(Ship.ShipType.valueOf(shipTypeValue.toUpperCase()));
             } else return Optional.empty();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);

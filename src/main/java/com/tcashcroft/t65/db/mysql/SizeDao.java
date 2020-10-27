@@ -46,7 +46,7 @@ public class SizeDao {
                 if (sizeValue.isEmpty()) {
                     return Optional.empty();
                 }
-                return Optional.of(Ship.Size.valueOf(sizeValue));
+                return Optional.of(Ship.Size.valueOf(sizeValue.toUpperCase()));
             } else return Optional.empty();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
