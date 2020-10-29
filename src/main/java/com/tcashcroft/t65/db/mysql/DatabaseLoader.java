@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,6 +103,18 @@ public class DatabaseLoader {
             upgradeDao.createUpgrade(upgrade);
         }
         upgradeDao.createFlipSideUpgrades(upgradesWithFlipSide);
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        loadColors();
+        loadActions();
+        loadFactions();
+        loadSizes();
+        loadShipTypes();
+        loadUpgradeTypes();
+        loadShips();
+        loadUpgrades();
     }
 
 }
