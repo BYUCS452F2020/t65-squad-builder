@@ -18,7 +18,8 @@ public class Ship {
     private int hull;
     private int shield;
     private int force;
-    private String abilityText;
+    private String pilotAbilityText;
+    private String shipAbilityText;
     private Action action1;
     private Action action2;
     private Action action3;

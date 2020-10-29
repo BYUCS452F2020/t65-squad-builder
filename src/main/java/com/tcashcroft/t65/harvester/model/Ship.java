@@ -30,13 +30,13 @@ public class Ship {
       private int cost;
       private String xws;
       private String ability;
-      private Map<String, String> shipAbility;
       private List<String> slots;
       private boolean hyperspace;
       private int ffg;
       private String artwork;
       private String image;
       private Force force;
+      private ShipAbility shipAbility;
    }
 
    @Data
@@ -51,5 +51,11 @@ public class Ship {
       private String difficulty;
       private String type;
       private Action linked;
+   }
+
+   @Data
+   public static class ShipAbility {
+      private String name;
+      private String text;
    }
 }

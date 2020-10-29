@@ -118,7 +118,10 @@ public class SqlTransformer extends GameDataTransformer {
                     } else {
                         ship.setForce(0);
                     }
-                    ship.setAbilityText(p.getAbility());
+                    ship.setPilotAbilityText(p.getAbility());
+                    if (p.getShipAbility() != null) {
+                        ship.setShipAbilityText(p.getShipAbility().getText());
+                    }
 
                     ship.setAction1(prepareAction(hs.getActions(), 1));
                     ship.setAction2(prepareAction(hs.getActions(), 2));

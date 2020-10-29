@@ -44,7 +44,7 @@ public class ShipDao {
         try (Connection connection = dataSource.getConnection()) {
             log.info("Attempting to insert ship {}", ship.getName());
             log.info("{}", ship);
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO ship Value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO ship Value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             int i = 1;
             statement.setString(i++, ship.getId());
             if (ship.getFaction() == null) {
@@ -63,7 +63,8 @@ public class ShipDao {
             statement.setInt(i++, ship.getHull());
             statement.setInt(i++, ship.getShield());
             statement.setInt(i++, ship.getForce());
-            statement.setString(i++, ship.getAbilityText());
+            statement.setString(i++, ship.getShipAbilityText());
+            statement.setString(i++, ship.getPilotAbilityText());
 
             if (ship.getAction1() == null) {
                 statement.setString(i++, null);
@@ -197,7 +198,8 @@ public class ShipDao {
         ship.setHull(rs.getInt("hull"));
         ship.setShield(rs.getInt("shield"));
         ship.setForce(rs.getInt("force"));
-        ship.setAbilityText(rs.getString("ability_text"));
+        ship.setShipAbilityText(rs.getString("ship_ability_text"));
+        ship.setPilotAbilityText(rs.getString("pilot_ability_text"));
         ship.setAction1(actionDao.readAction(rs.getString("action_1")).orElse(null));
         ship.setAction2(actionDao.readAction(rs.getString("action_2")).orElse(null));
         ship.setAction3(actionDao.readAction(rs.getString("action_3")).orElse(null));
