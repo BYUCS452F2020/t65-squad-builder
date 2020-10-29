@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `ship` (
   `action_2` varchar(36) DEFAULT NULL,
   `action_3` varchar(36) DEFAULT NULL,
   `action_4` varchar(36) DEFAULT NULL,
+  `action_5` varchar(36) DEFAULT NULL,
   `astromech_upgrades` int DEFAULT NULL,
   `cannon_upgrades` int DEFAULT NULL,
   `cargo_upgrades` int DEFAULT NULL,
@@ -102,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `ship` (
   CONSTRAINT `ship_action_2` FOREIGN KEY (`action_2`) REFERENCES `action` (`id`),
   CONSTRAINT `ship_action_3` FOREIGN KEY (`action_3`) REFERENCES `action` (`id`),
   CONSTRAINT `ship_action_4` FOREIGN KEY (`action_4`) REFERENCES `action` (`id`),
+  CONSTRAINT `ship_action_5` FOREIGN KEY (`action_5`) REFERENCES `action` (`id`),
   CONSTRAINT `ship_faction` FOREIGN KEY (`faction`) REFERENCES `faction` (`name`),
   CONSTRAINT `ship_size` FOREIGN KEY (`size`) REFERENCES `size` (`name`),
   CONSTRAINT `ship_type` FOREIGN KEY (`ship_type`) REFERENCES `ship_type` (`name`)
