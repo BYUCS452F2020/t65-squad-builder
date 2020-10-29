@@ -23,6 +23,7 @@ public class Ship {
     private Action action2;
     private Action action3;
     private Action action4;
+    private Action action5;
     private int astromechUpgrades;
     private int cannonUpgrades;
     private int cargoUpgrades;
