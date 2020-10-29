@@ -99,7 +99,7 @@ public class SqlTransformer extends GameDataTransformer {
                 for (com.tcashcroft.t65.harvester.model.Ship.Pilot p : hs.getPilots()) {
                     Ship ship = new Ship();
                     ship.setId(UUID.randomUUID().toString()); // TODO come back to this
-                    ship.setFaction(null); // TODO come back to this too
+                    ship.setFaction(Utils.Faction.valueOf(hs.getFaction().toUpperCase().replaceAll(" ", "_"))); // TODO come back to this too
                     ship.setName(p.getName());
                     ship.setShipType(Ship.ShipType.valueOf(hs.getType()));
                     ship.setNameLimit(p.getLimited());
@@ -112,6 +112,7 @@ public class SqlTransformer extends GameDataTransformer {
                     ship.setAgility(getTypeStat(stats, "agility"));
                     ship.setHull(getTypeStat(stats, "hull"));
                     ship.setShield(getTypeStat(stats, "shields"));
+
                     if (p.getForce() != null) {
                         ship.setForce(p.getForce().getValue());
                     } else {
@@ -132,24 +133,24 @@ public class SqlTransformer extends GameDataTransformer {
                     ship.setAstromechUpgrades(prepareUpgradeCount(slots, "Astromech"));
                     ship.setCannonUpgrades(prepareUpgradeCount(slots, "Cannon"));
                     ship.setCargoUpgrades(prepareUpgradeCount(slots, "Cargo"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Configuration"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Crew"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Device"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Force"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Gunner"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Hardpoint"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Hyperdrive"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Illicit"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Modification"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Missile"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Sensor"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Tactical Relay"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Talent"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Team"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Tech"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Title"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Torpedo"));
-                    ship.setCannonUpgrades(prepareUpgradeCount(slots, "Turret"));
+                    ship.setConfigurationUpgrades(prepareUpgradeCount(slots, "Configuration"));
+                    ship.setCrewUpgrades(prepareUpgradeCount(slots, "Crew"));
+                    ship.setDeviceUpgrades(prepareUpgradeCount(slots, "Device"));
+                    ship.setForceUpgrades(prepareUpgradeCount(slots, "Force"));
+                    ship.setGunnerUpgrades(prepareUpgradeCount(slots, "Gunner"));
+                    ship.setHardpointUpgrades(prepareUpgradeCount(slots, "Hardpoint"));
+                    ship.setHyperdriveUpgrades(prepareUpgradeCount(slots, "Hyperdrive"));
+                    ship.setIllicitUpgrades(prepareUpgradeCount(slots, "Illicit"));
+                    ship.setModificationUpgrades(prepareUpgradeCount(slots, "Modification"));
+                    ship.setMissileUpgrades(prepareUpgradeCount(slots, "Missile"));
+                    ship.setSensorUpgrades(prepareUpgradeCount(slots, "Sensor"));
+                    ship.setTacticalRelayUpgrades(prepareUpgradeCount(slots, "Tactical Relay"));
+                    ship.setTalentUpgrades(prepareUpgradeCount(slots, "Talent"));
+                    ship.setTeamUpgrades(prepareUpgradeCount(slots, "Team"));
+                    ship.setTechUpgrades(prepareUpgradeCount(slots, "Tech"));
+                    ship.setTitleUpgrades(prepareUpgradeCount(slots, "Title"));
+                    ship.setTorpedoUpgrades(prepareUpgradeCount(slots, "Torpedo"));
+                    ship.setTurretUpgrades(prepareUpgradeCount(slots, "Turret"));
 
                     ship.setHyperspaceLegal(p.isHyperspace());
                     ship.setExtendedLegal(true);
@@ -225,13 +226,13 @@ public class SqlTransformer extends GameDataTransformer {
     private int getArcValue(List<Map<String, String>> stats, String arc) {
         // TODO the arc stats have a type, for example "type": "attack". This may be future proofing for the game, but I need to verify.
         // alternatively, the stats could be reimplemented as proper objects...
-        Optional<String> optionalValue = stats.stream().filter(s -> s.containsKey("arc")).filter(s -> s.containsKey(arc)).map(s -> s.get("value")).findFirst();
-        return optionalValue.isPresent() ? Integer.parseInt(optionalValue.get()) : -1;
+        Optional<String> optionalValue = stats.stream().filter(s -> s.containsKey("arc")).filter(s -> s.containsValue(arc)).map(s -> s.get("value")).findFirst();
+        return optionalValue.isPresent() ? Integer.parseInt(optionalValue.get()) : 0;
     }
 
     private int getTypeStat(List<Map<String, String>> stats, String stat) {
         Optional<String> optionalValue = stats.stream().filter(s -> s.containsKey("type")).filter(s -> s.containsValue(stat)).map(s -> s.get("value")).findFirst();
-        return optionalValue.isPresent() ? Integer.parseInt(optionalValue.get()) : -1;
+        return optionalValue.isPresent() ? Integer.parseInt(optionalValue.get()) : 0;
     }
 
     private Action prepareAction(List<com.tcashcroft.t65.harvester.model.Ship.Action> actions, int actionNumber) {
