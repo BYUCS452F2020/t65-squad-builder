@@ -27,4 +27,8 @@ public class UpgradeService {
         return upgradeDao.readUpgrade(upgradeId).orElseThrow(() -> new RuntimeException());
     }
 
+    public List<Upgrade> getAllUpgrades() {
+        return upgradeDao.readAllUpgrades();
+    }
+
 }

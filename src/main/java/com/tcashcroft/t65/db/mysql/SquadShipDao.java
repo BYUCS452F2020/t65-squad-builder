@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -37,7 +38,7 @@ public class SquadShipDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO squad_ship VALUE (?,?,?)");
             int i = 1;
-            statement.setString(i++, null);
+            statement.setString(i++, UUID.randomUUID().toString());
             statement.setString(i++, squadId);
             statement.setString(i++, ship.getId());
             int affectedRows = statement.executeUpdate();

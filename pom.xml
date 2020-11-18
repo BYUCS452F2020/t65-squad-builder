@@ -20,10 +20,10 @@
   <url>https://github.com/BYUCS452F2020/t65-squad-builder</url>
 
   <properties>
-    <frontend.install.phase>generate-resources</frontend.install.phase>
-    <frontend.package.phase>prepare-package</frontend.package.phase>
-    <frontend.contextRoot>t65-squad-builder</frontend.contextRoot>
-    <frontend.name>t65-squad-builder</frontend.name>
+<!--     <frontend.install.phase>generate-resources</frontend.install.phase>-->
+<!--     <frontend.package.phase>prepare-package</frontend.package.phase>-->
+<!--     <frontend.contextRoot>t65-squad-builder</frontend.contextRoot>-->
+<!--     <frontend.name>t65-squad-builder</frontend.name>-->
     <scm.repository>github.com/BYUCS452F2020/t65-squad-builder</scm.repository>
   </properties>
 

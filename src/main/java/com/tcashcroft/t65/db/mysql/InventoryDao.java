@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -37,7 +38,7 @@ public class InventoryDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO inventory Value (?, ?)");
             int i = 1;
-            statement.setString(i++, null);
+            statement.setString(i++, UUID.randomUUID().toString());
             statement.setString(i++, username);
             int affectedRows = statement.executeUpdate();
             log.info("Create inventory affected {} rows", affectedRows);

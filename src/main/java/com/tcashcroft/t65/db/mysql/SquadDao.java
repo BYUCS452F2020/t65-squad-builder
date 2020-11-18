@@ -14,10 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -41,9 +38,9 @@ public class SquadDao {
             return;
         }
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO inventory Value (?,?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO squad Value (?,?,?,?,?)");
             int i = 1;
-            statement.setString(i++, null);
+            statement.setString(i++, UUID.randomUUID().toString());
             statement.setString(i++, username);
             statement.setString(i++, squadName);
             statement.setString(i++, faction.getValue());
@@ -71,7 +68,7 @@ public class SquadDao {
                 squad.setUsername(rs.getString("username"));
                 squad.setName(rs.getString("squad_name"));
 
-                List<SquadShip> squadShips = squadShipDao.readSquadShips(rs.getString("squad_name"));
+                List<SquadShip> squadShips = squadShipDao.readSquadShips(rs.getString("id"));
                 Map<String, List<SquadUpgrade>> shipIdToUpgrades = new HashMap<>();
 
                 for (SquadShip ss : squadShips) {

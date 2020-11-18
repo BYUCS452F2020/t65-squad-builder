@@ -39,7 +39,7 @@ public class InventoryController {
         return inventoryService.getInventoryById(id);
     }
 
-    @PostMapping("/{id}/ship/{shipid}")
+    @PostMapping("/{id}/ship/{shipId}")
     public void addShip(@PathVariable("id") final String id, @PathVariable("shipId") final String shipId) {
         Ship ship = shipService.getShip(shipId);
         inventoryService.createOrIncrementShipInventory(id, ship);

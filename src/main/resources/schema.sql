@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `upgrade` (
   `name_limit` int DEFAULT NULL,
   `ship_type` varchar(45) DEFAULT NULL,
   `upgrade_type` varchar(45) DEFAULT NULL,
-  `upgrade_text` varchar(300) DEFAULT NULL,
+  `upgrade_text` varchar(500) DEFAULT NULL,
   `action_1` varchar(36) DEFAULT NULL,
   `action_2` varchar(36) DEFAULT NULL,
   `action_3` varchar(36) DEFAULT NULL,

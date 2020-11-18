@@ -31,4 +31,8 @@ public class ShipService {
     public List<Ship> getShipsByShipType(Ship.ShipType shipType) {
         return shipDao.readShipsByShipType(shipType);
     }
+
+    public List<Ship> getAllShips() {
+        return shipDao.readAllShips();
+    }
 }

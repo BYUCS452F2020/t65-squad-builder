@@ -38,4 +38,9 @@ public class ShipController {
         Ship.ShipType shipType = Ship.ShipType.valueOf(shipTypeId.toUpperCase());
         return shipService.getShipsByShipType(shipType);
     }
+
+    @GetMapping("/all")
+    public List<Ship> getAllShips() {
+        return shipService.getAllShips();
+    }
 }

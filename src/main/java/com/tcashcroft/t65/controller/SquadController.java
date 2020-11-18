@@ -31,14 +31,14 @@ public class SquadController {
         } else throw new RuntimeException("Forbidden");
     }
 
-    @Deprecated
-    @GetMapping("/name/{name}")
-    public Squad getSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) {
-        Squad squad = squadService.getSquadBySquadName(squadName, username);
-        if (squad.getUsername().equals(username)) {
-            return squad;
-        } else throw new RuntimeException("forbidden");
-    }
+//    @Deprecated
+//    @GetMapping("/name/{name}")
+//    public Squad getSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) {
+//        Squad squad = squadService.getSquadBySquadName(squadName, username);
+//        if (squad.getUsername().equals(username)) {
+//            return squad;
+//        } else throw new RuntimeException("forbidden");
+//    }
 
     @PostMapping("/{faction}/{name}")
     public Squad createSquad(@PathVariable("username") final String username, @PathVariable("faction") final Utils.Faction faction, @PathVariable("name") final String squadName) {
@@ -54,21 +54,21 @@ public class SquadController {
         } else throw new RuntimeException("forbidden");
     }
 
-    @Deprecated
-    @DeleteMapping("/name/{name}")
-    public void deleteSquadByName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) {
-        squadService.deleteSquadBySquadName(squadName, username);
-    }
+//    @Deprecated
+//    @DeleteMapping("/name/{name}")
+//    public void deleteSquadByName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) {
+//        squadService.deleteSquadBySquadName(squadName, username);
+//    }
 
-    @Deprecated
-    @PostMapping("/{name}/ship/{shipId}")
-    public void addShipToSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipId") final String shipId) {
-        Squad squad = squadService.getSquadBySquadName(squadName, username);
-        if (squad.getUsername().equals(username)) {
-            Ship ship = shipService.getShip(shipId);
-            squadService.createSquadShip(squad.getId(), ship);
-        } else throw new RuntimeException("forbidden");
-    }
+//    @Deprecated
+//    @PostMapping("/{name}/ship/{shipId}")
+//    public void addShipToSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipId") final String shipId) {
+//        Squad squad = squadService.getSquadBySquadName(squadName, username);
+//        if (squad.getUsername().equals(username)) {
+//            Ship ship = shipService.getShip(shipId);
+//            squadService.createSquadShip(squad.getId(), ship);
+//        } else throw new RuntimeException("forbidden");
+//    }
 
     @PostMapping("/{id}/ship/{shipId}")
     public void addShipToSquad(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("shipId") final String shipId) {

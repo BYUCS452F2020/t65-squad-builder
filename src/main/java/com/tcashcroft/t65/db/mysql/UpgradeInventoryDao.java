@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -46,7 +47,7 @@ public class UpgradeInventoryDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO upgrade_inventory Value (?,?,?,?)");
             int i = 1;
-            statement.setString(i++, null);
+            statement.setString(i++, UUID.randomUUID().toString());
             statement.setString(i++, inventoryId);
             statement.setString(i++, upgrade.getId());
             statement.setInt(i++, 1);
@@ -123,7 +124,7 @@ public class UpgradeInventoryDao {
             ResultSet rs = statement.executeQuery();
             List<Upgrade> upgrades = new ArrayList<>();
             while (rs.next()) {
-                String shipId = rs.getString("ship");
+                String shipId = rs.getString("upgrade");
                 try {
                     Optional<Upgrade> upgradeOptional = upgradeDao.readUpgrade(shipId);
                     if (upgradeOptional.isPresent()) {

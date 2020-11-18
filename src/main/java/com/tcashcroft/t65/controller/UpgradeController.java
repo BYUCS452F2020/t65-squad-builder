@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("upgrade")
 public class UpgradeController {
@@ -18,5 +20,10 @@ public class UpgradeController {
     @GetMapping("/{id}")
     public Upgrade getUpgrade(@PathVariable final String upgradeId) {
         return upgradeService.getUpgrade(upgradeId);
+    }
+
+    @GetMapping("/all")
+    public List<Upgrade> getAllUpgrades() {
+        return upgradeService.getAllUpgrades();
     }
 }

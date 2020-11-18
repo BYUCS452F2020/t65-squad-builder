@@ -12,6 +12,7 @@ import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
@@ -28,6 +29,11 @@ public class GameDataHarvester {
 
     @Autowired
     private GameDataHarvesterConfiguration config;
+
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        cloneDataRepo();
+    }
 
     public void cloneDataRepo() throws Exception {
         if (config.dataRepoLocation.toFile().exists()) {

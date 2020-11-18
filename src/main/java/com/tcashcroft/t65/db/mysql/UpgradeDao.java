@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -161,25 +162,8 @@ public class UpgradeDao {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 log.info("Result Set: {}", rs.getFetchSize());
-                Upgrade upgrade = new Upgrade();
 
-                upgrade.setId(rs.getString("id"));
-                upgrade.setFaction(factionDao.readFaction(rs.getString("faction")).orElse(null));
-                upgrade.setName(rs.getString("name"));
-                upgrade.setNameLimit(rs.getInt("name_limit"));
-                upgrade.setShipType(shipTypeDao.readShipType(rs.getString("ship_type")).orElse(null));
-                upgrade.setUpgradeType(upgradeTypeDao.readUpgradeType(rs.getString("upgrade_type")).orElseThrow(() -> new RuntimeException("Upgrade type was blank")));
-                upgrade.setAction1(actionDao.readAction(rs.getString("action_1")).orElse(null));
-                upgrade.setAction2(actionDao.readAction(rs.getString("action_2")).orElse(null));
-                upgrade.setAction3(actionDao.readAction(rs.getString("action_3")).orElse(null));
-                upgrade.setAction4(actionDao.readAction(rs.getString("action_4")).orElse(null));
-                if (recurse > 0) {
-                    recurse--;
-                    upgrade.setFlipSideId(readUpgrade(rs.getString("flip_side"), recurse).get().getFlipSideId());
-                }
-                upgrade.setPointsCost(rs.getInt("points_cost"));
-                upgrade.setHyperspaceLegal(rs.getBoolean("hyperspace_legal"));
-                upgrade.setExtendedLegal(rs.getBoolean("extended_legal"));
+                Upgrade upgrade = parseUpgrade(rs, recurse);
 
                 return Optional.of(upgrade);
             } else return Optional.empty();
@@ -187,5 +171,47 @@ public class UpgradeDao {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Upgrade> readAllUpgrades() {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM upgrade");
+            ResultSet rs = statement.executeQuery();
+            List<Upgrade> upgrades = new ArrayList<>();
+            while (rs.next()) {
+                Upgrade upgrade = parseUpgrade(rs, 1);
+                upgrades.add(upgrade);
+            }
+            return upgrades;
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Upgrade parseUpgrade(ResultSet rs, int recurse) throws SQLException {
+        Upgrade upgrade = new Upgrade();
+
+        upgrade.setId(rs.getString("id"));
+        upgrade.setFaction(factionDao.readFaction(rs.getString("faction")).orElse(null));
+        upgrade.setName(rs.getString("name"));
+        upgrade.setNameLimit(rs.getInt("name_limit"));
+        upgrade.setShipType(shipTypeDao.readShipType(rs.getString("ship_type")).orElse(null));
+        upgrade.setUpgradeType(upgradeTypeDao.readUpgradeType(rs.getString("upgrade_type")).orElseThrow(() -> new RuntimeException("Upgrade type was blank")));
+        upgrade.setUpgradeText(rs.getString("upgrade_text"));
+        upgrade.setAction1(actionDao.readAction(rs.getString("action_1")).orElse(null));
+        upgrade.setAction2(actionDao.readAction(rs.getString("action_2")).orElse(null));
+        upgrade.setAction3(actionDao.readAction(rs.getString("action_3")).orElse(null));
+        upgrade.setAction4(actionDao.readAction(rs.getString("action_4")).orElse(null));
+        upgrade.setFlipSideId(rs.getString("flip_side"));
+//        if (recurse > 0) {
+//            recurse--;
+//            upgrade.setFlipSideId(readUpgrade(rs.getString("flip_side"), recurse).get().getFlipSideId());
+//        }
+        upgrade.setPointsCost(rs.getInt("points_cost"));
+        upgrade.setHyperspaceLegal(rs.getBoolean("hyperspace_legal"));
+        upgrade.setExtendedLegal(rs.getBoolean("extended_legal"));
+
+        return upgrade;
     }
 }

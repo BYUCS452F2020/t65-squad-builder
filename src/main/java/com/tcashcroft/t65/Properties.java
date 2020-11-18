@@ -27,6 +27,7 @@ public class Properties {
     @ConfigurationProperties(prefix = "xwing-data2")
     public static class XwingData2 {
         private String dataRepoUri;
+        private String downloadDir;
         private String dataRepoLocation;
         private String actionsPath;
         private String factionsPath;

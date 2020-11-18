@@ -37,7 +37,8 @@ public class Configuration {
 
     @Bean
     public Path dataRepoLocation() {
-        return Paths.get(System.getProperty("java.io.tmpdir"), properties.getHarvester().getXwingData2().getDataRepoLocation());
+//        return Paths.get(System.getProperty("java.io.tmpdir"), properties.getHarvester().getXwingData2().getDataRepoLocation());
+        return Paths.get(properties.getHarvester().getXwingData2().getDownloadDir(), properties.getHarvester().getXwingData2().getDataRepoLocation());
     }
 
     @Bean

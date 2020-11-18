@@ -84,7 +84,8 @@ public class SqlTransformer extends GameDataTransformer {
                 }
                 actions.addAll(coloredActions);
             }
-            actions.forEach(a -> a.setId(UUID.randomUUID().toString()));
+//            actions.forEach(a -> a.setId(UUID.randomUUID().toString()));
+            actions.forEach(a -> a.setId(UUID.nameUUIDFromBytes((a.getAction() + "-" + a.getColor().getValue()).getBytes()).toString()));
 
             actionsList = actions.stream().collect(Collectors.toList());
             return actionsList;
@@ -98,7 +99,8 @@ public class SqlTransformer extends GameDataTransformer {
                 List<Ship> sublist = new ArrayList<>();
                 for (com.tcashcroft.t65.harvester.model.Ship.Pilot p : hs.getPilots()) {
                     Ship ship = new Ship();
-                    ship.setId(UUID.randomUUID().toString()); // TODO come back to this
+//                    ship.setId(UUID.randomUUID().toString()); // TODO come back to this
+                    ship.setId(UUID.nameUUIDFromBytes(p.getName().getBytes()).toString());
                     ship.setFaction(Utils.Faction.valueOf(hs.getFaction().toUpperCase().replaceAll(" ", "_"))); // TODO come back to this too
                     ship.setName(p.getName());
                     ship.setShipType(Ship.ShipType.valueOf(hs.getType()));
@@ -181,19 +183,26 @@ public class SqlTransformer extends GameDataTransformer {
                     Upgrade upgrade = new Upgrade();
 
 //                upgrade.setId(hu.getName() + "-" + s.getTitle());
-                    upgrade.setId(UUID.randomUUID().toString());
+                    upgrade.setId(UUID.nameUUIDFromBytes(s.getTitle().getBytes()).toString());
+//                    upgrade.setId(Integer.toString(s.getTitle().hashCode()));
                     // TODO revisit this - they are a list in the source data
                     upgrade.setFaction(null);
                     upgrade.setName(s.getTitle());
                     upgrade.setNameLimit(hu.getLimited());
                     // TODO this is also handled in the restrictions list
                     upgrade.setShipType(null);
+                    upgrade.setUpgradeText(s.getAbility());
                     upgrade.setUpgradeType(Upgrade.UpgradeType.valueOf(s.getType().toUpperCase().replaceAll(" ", "_")));
                     upgrade.setAction1(prepareAction(s.getActions(), 1));
                     upgrade.setAction2(prepareAction(s.getActions(), 2));
                     upgrade.setAction3(prepareAction(s.getActions(), 3));
                     upgrade.setAction4(prepareAction(s.getActions(), 4));
-                    upgrade.setPointsCost(hu.getCost().getValue());
+                    if (hu.getCost() == null) {
+                        log.warn("Cost was null. Upgrade: {}", s.getTitle());
+                        upgrade.setPointsCost(0);
+                    } else {
+                        upgrade.setPointsCost(hu.getCost().getValue());
+                    }
                     upgrade.setHyperspaceLegal(hu.isHyperspace());
                     upgrade.setExtendedLegal(true);
 
@@ -253,13 +262,16 @@ public class SqlTransformer extends GameDataTransformer {
         Action action = new Action();
         action.setColor(Action.Color.valueOf(a.getDifficulty().toUpperCase()));
         action.setAction(a.getType());
-        action.setId(UUID.randomUUID().toString());
+//        action.setId(UUID.randomUUID().toString());
+        action.setId(UUID.nameUUIDFromBytes((action.getAction() + "-" + action.getColor().getValue()).getBytes()).toString());
 
         Optional<Action> optionalAction = convertActions().stream().filter(s -> action.getColor().equals(s.getAction())).filter(s -> action.getAction().equals(s.getAction())).findFirst();
         if (optionalAction.isEmpty()) {
             log.warn("A new action was found from the ship list. {}", action);
             return null;
-        } else return optionalAction.get();
+        } else {
+            return optionalAction.get();
+        }
 
 //        action.setId(action.getAction() + "-" + action.getColor().getValue());
         // TODO add linked action
@@ -277,6 +289,7 @@ public class SqlTransformer extends GameDataTransformer {
         action.setAction(actionType);
         action.setColor(Action.Color.valueOf(actionColor));
         action.setId(UUID.randomUUID().toString());
+        action.setId(UUID.nameUUIDFromBytes((action.getAction() + "-" + action.getColor().getValue()).getBytes()).toString());
 //        action.setId(actionType + "-" + actionColor);
         return action;
     }

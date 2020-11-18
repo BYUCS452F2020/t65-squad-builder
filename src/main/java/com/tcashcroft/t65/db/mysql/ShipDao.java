@@ -183,6 +183,22 @@ public class ShipDao {
         }
     }
 
+    public List<Ship> readAllShips() {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM ship");
+            ResultSet rs = statement.executeQuery();
+            List<Ship> ships = new ArrayList<>();
+            while(rs.next()) {
+                Ship ship = parseShip(rs);
+                ships.add(ship);
+            }
+            return ships;
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     private Ship parseShip(ResultSet rs) throws SQLException {
         Ship ship = new Ship();
         ship.setId(rs.getString("id"));
