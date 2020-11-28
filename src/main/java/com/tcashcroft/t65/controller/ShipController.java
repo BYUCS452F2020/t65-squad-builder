@@ -1,8 +1,7 @@
 package com.tcashcroft.t65.controller;
 
-import com.tcashcroft.t65.db.mysql.FactionDao;
+import com.tcashcroft.t65.exception.NotFoundException;
 import com.tcashcroft.t65.model.Ship;
-import com.tcashcroft.t65.model.Utils;
 import com.tcashcroft.t65.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,24 +18,24 @@ public class ShipController {
     @Autowired
     private ShipService shipService;
 
-    @Autowired
-    private FactionDao factionDao;
-
     @GetMapping("{id}")
-    public Ship getShip(@PathVariable("id") final String id) {
+    public Ship getShip(@PathVariable("id") final String id) throws NotFoundException {
         return shipService.getShip(id);
     }
 
-    @GetMapping("faction/{factionId}")
-    public List<Ship> getShipsByFaction(@PathVariable("factionId") final String factionId) {
-        Utils.Faction faction = factionDao.readFaction(factionId.toUpperCase()).orElseThrow(() -> new RuntimeException("bad request"));
+    @GetMapping("faction/{faction}")
+    public List<Ship> getShipsByFaction(@PathVariable final String faction) {
         return shipService.getShipsByFaction(faction);
     }
 
-    @GetMapping("ship_type/{shipTypeId}")
-    public List<Ship> getShipsByShipType(@PathVariable("shipTypeId") final String shipTypeId) {
-        Ship.ShipType shipType = Ship.ShipType.valueOf(shipTypeId.toUpperCase());
+    @GetMapping("type/{shipType}")
+    public List<Ship> getShipsByShipType(@PathVariable final String shipType) {
         return shipService.getShipsByShipType(shipType);
+    }
+
+    @GetMapping("/name/{name}")
+    public Ship getShipsByShipName(@PathVariable final String name) throws NotFoundException {
+        return shipService.getShipByNameId(name);
     }
 
     @GetMapping("/all")

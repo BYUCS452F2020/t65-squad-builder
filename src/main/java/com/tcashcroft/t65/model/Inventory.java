@@ -1,13 +1,17 @@
 package com.tcashcroft.t65.model;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Document
 public class Inventory {
-    private String id;
+    @Id
     private String username;
-    private List<Ship> ships;
-    private List<Upgrade> upgrades;
+    private List<Ship> ships = new ArrayList<>();
+    private List<Upgrade> upgrades = new ArrayList<>();
 }

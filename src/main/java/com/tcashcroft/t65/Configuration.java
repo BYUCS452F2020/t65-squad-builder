@@ -1,10 +1,19 @@
 package com.tcashcroft.t65;
 
 import com.tcashcroft.t65.harvester.GameDataHarvester;
+import com.tcashcroft.t65.model.Squad;
 import edu.byu.hbll.json.ObjectMapperFactory;
 import edu.byu.hbll.json.UncheckedObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.IndexOperations;
+import org.springframework.data.mongodb.core.index.IndexResolver;
+import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -20,9 +29,14 @@ public class Configuration {
 
     private Properties properties;
 
-    @Bean("cardApiUri")
-    public URI cardApiUri() {
-        return URI.create(properties.getHarvester().getCardApiUri());
+    @Bean("upgradeCardApiUri")
+    public URI upgradeCardApiUri() {
+        return URI.create(properties.getHarvester().getUpgradeCardApiUri());
+    }
+
+    @Bean("shipCardApiUri")
+    public URI shipCardApiUri() {
+        return URI.create(properties.getHarvester().getShipcardApiUri());
     }
 
     @Bean("dataRepoUri")
@@ -78,9 +92,24 @@ public class Configuration {
         config.setDataRepoLocation(dataRepoLocation());
         config.setActionsPath(actionsPath());
         config.setFactionsPath(factionsPath());
-        config.setPilotsPath(pilotsDir());
+        config.setPilotsDir(pilotsDir());
+        config.setUpgradesDir(upgradesDir());
         config.setFfgXwsPath(ffgXwsPath());
         config.setMapper(mapper());
         return config;
     }
+
+//    @Autowired
+//    MongoTemplate mongoTemplate;
+//
+//    @Autowired
+//    MongoMappingContext mongoMappingContext;
+//
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void initIndicesAfterStartup() {
+//        IndexOperations indexOps = mongoTemplate.indexOps(Squad.class);
+//
+//        IndexResolver resolver = new MongoPersistentEntityIndexResolver(mongoMappingContext);
+//        resolver.resolveIndexFor(Squad.class).forEach(indexOps::ensureIndex);
+//    }
 }

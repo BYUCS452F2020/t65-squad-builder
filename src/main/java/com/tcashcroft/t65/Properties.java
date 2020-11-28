@@ -18,7 +18,8 @@ public class Properties {
     @Configuration
     @ConfigurationProperties(prefix = "harvester")
     public static class HarvesterProperties {
-       private String cardApiUri;
+       private String upgradeCardApiUri;
+       private String shipcardApiUri;
        private XwingData2 xwingData2;
     }
 

@@ -1,10 +1,13 @@
 package com.tcashcroft.t65.controller;
 
+import com.tcashcroft.t65.exception.ExistsException;
+import com.tcashcroft.t65.exception.ForbiddenException;
+import com.tcashcroft.t65.exception.NotFoundException;
+import com.tcashcroft.t65.exception.UpgradeNotAllowedException;
 import com.tcashcroft.t65.model.*;
 import com.tcashcroft.t65.service.ShipService;
 import com.tcashcroft.t65.service.SquadService;
 import com.tcashcroft.t65.service.UpgradeService;
-import org.hibernate.jpa.spi.MutableJpaCompliance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,116 +26,99 @@ public class SquadController {
     @Autowired
     private UpgradeService upgradeService;
 
-    @GetMapping("/{id}")
-    public Squad getSquadById(@PathVariable("username") final String username, @PathVariable("id") final String id) {
+    @Deprecated
+    @GetMapping("/id/{id}")
+    public Squad getSquadById(@PathVariable("username") final String username, @PathVariable("id") final String id) throws NotFoundException, ForbiddenException {
         Squad squad = squadService.getSquadById(id);
         if (squad.getUsername().equals(username)) {
             return squad;
-        } else throw new RuntimeException("Forbidden");
+        } else throw new ForbiddenException();
     }
 
-//    @Deprecated
-//    @GetMapping("/name/{name}")
-//    public Squad getSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) {
-//        Squad squad = squadService.getSquadBySquadName(squadName, username);
-//        if (squad.getUsername().equals(username)) {
-//            return squad;
-//        } else throw new RuntimeException("forbidden");
-//    }
-
-    @PostMapping("/{faction}/{name}")
-    public Squad createSquad(@PathVariable("username") final String username, @PathVariable("faction") final Utils.Faction faction, @PathVariable("name") final String squadName) {
-        Squad squad = squadService.createSquad(squadName, username, faction);
-        return squad;
-    }
-
-    @DeleteMapping("/id/{id}")
-    public void deleteSquadById(@PathVariable("username") final String username, @PathVariable("id") final String id) {
-        Squad squad = squadService.getSquadById(id);
+    @GetMapping("/{name}")
+    public Squad getSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) throws NotFoundException, ForbiddenException {
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
         if (squad.getUsername().equals(username)) {
-            squadService.deleteSquadById(id);
-        } else throw new RuntimeException("forbidden");
+            return squad;
+        } else throw new ForbiddenException();
     }
 
-//    @Deprecated
-//    @DeleteMapping("/name/{name}")
-//    public void deleteSquadByName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) {
-//        squadService.deleteSquadBySquadName(squadName, username);
-//    }
-
-//    @Deprecated
-//    @PostMapping("/{name}/ship/{shipId}")
-//    public void addShipToSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipId") final String shipId) {
-//        Squad squad = squadService.getSquadBySquadName(squadName, username);
-//        if (squad.getUsername().equals(username)) {
-//            Ship ship = shipService.getShip(shipId);
-//            squadService.createSquadShip(squad.getId(), ship);
-//        } else throw new RuntimeException("forbidden");
-//    }
-
-    @PostMapping("/{id}/ship/{shipId}")
-    public void addShipToSquad(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("shipId") final String shipId) {
-        Squad squad = squadService.getSquadById(id);
+    @PostMapping()
+    public Squad createSquad(@PathVariable("username") final String username, @RequestBody final Squad squad) throws ForbiddenException, ExistsException {
         if (squad.getUsername().equals(username)) {
-            Ship ship = shipService.getShip(shipId);
-            squadService.createSquadShip(id, ship);
-        } else throw new RuntimeException("forbidden");
+            try {
+                squadService.getSquadBySquadName(squad.getName(), squad.getUsername());
+                throw new ExistsException();
+            } catch (NotFoundException e) {
+                Squad newSquad = new Squad();
+                newSquad.setUsername(squad.getUsername());
+                newSquad.setFaction(squad.getFaction());
+                newSquad.setName(squad.getName());
+                newSquad.setShips(squad.getShips());
+                newSquad.setTotalPoints(squad.getTotalPoints());
+                return squadService.createSquad(newSquad);
+            }
+        } else throw new ForbiddenException();
     }
 
-    @GetMapping("/{id}/ships")
-    public List<SquadShip> getSquadShips(@PathVariable("username") final String username, @PathVariable("id") final String id) {
-        Squad squad = squadService.getSquadById(id);
+    @DeleteMapping("/{name}")
+    public void deleteSquadById(@PathVariable("username") final String username, @PathVariable("name") final String squadName) throws NotFoundException, ForbiddenException{
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
+        if (squad.getUsername().equals(username)) {
+            squadService.deleteSquadBySquadName(squadName, username);
+        } else throw new ForbiddenException();
+    }
+
+    @PostMapping("/{name}/ship/{shipName}")
+    public Squad.ShipEntry addShipToSquad(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipName") final String shipName) throws NotFoundException, ForbiddenException{
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
+        if (squad.getUsername().equals(username)) {
+            Ship ship = shipService.getShipByNameId(shipName);
+            Squad.ShipEntry entry = squadService.addShipToSquadBySquadName(squadName, username, ship);
+            squadService.updateSquad(squad);
+            return entry;
+        } else throw new ForbiddenException();
+    }
+
+    @GetMapping("/{name}/ship_entry/{shipEntryId}")
+    public Squad.ShipEntry getShipEntryById(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipEntryId") final String shipEntryId) throws NotFoundException, ForbiddenException {
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
+        if (squad.getUsername().equals(username)) {
+            return squad.getShips().stream().filter(it -> it.getId().equals(shipEntryId)).findFirst().orElseThrow(() -> new NotFoundException());
+        } else throw new ForbiddenException();
+    }
+
+    @DeleteMapping("/{name}/ship_entry/{shipEntryId}")
+    public Squad deleteSquadShipByShipId(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipEntryId") final String shipEntryId) throws NotFoundException, ForbiddenException{
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
+        if (squad.getUsername().equals(username)) {
+            return squadService.removeShipEntryFromSquadBySquadName(squadName, username, shipEntryId);
+        } else throw new ForbiddenException();
+    }
+
+    @GetMapping("/{name}/ships")
+    public List<Squad.ShipEntry> getSquadShips(@PathVariable("username") final String username, @PathVariable("name") final String squadName) throws NotFoundException, ForbiddenException {
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
         if (squad.getUsername().equals(username)) {
             return squad.getShips();
-        } else throw new RuntimeException("forbidden");
+        } else throw new ForbiddenException();
     }
 
-    @DeleteMapping("/{id}/squad_ship/{squadShipId}")
-    public void deleteSquadShipByShipId(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("squadShipId") final String squadShipId) {
-        Squad squad = squadService.getSquadById(id);
-        if (squad.getUsername().equals(username)) {
-            squadService.deleteSquadShip(squadShipId);
-        } else throw new RuntimeException("forbidden");
-    }
-
-    @PostMapping("/{id}/squad_ship/{squadShipId}/upgrade/{upgradeId}")
-    public void addUpgradeToSquadShip(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("squadShipId") final String squadShipId, @PathVariable("upgradeId") final String upgradeId) {
-       Squad squad = squadService.getSquadById(id);
+    @PostMapping("/{name}/ship_entry/{shipEntryId}/upgrade/{upgradeName}")
+    public Squad.ShipEntry addUpgradeToSquadShip(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipEntryId") final String shipEntryId, @PathVariable("upgradeName") final String upgradeName) throws NotFoundException, ForbiddenException, UpgradeNotAllowedException {
+       Squad squad = squadService.getSquadBySquadName(squadName, username);
        if (squad.getUsername().equals(username)) {
-           Upgrade upgrade = upgradeService.getUpgrade(upgradeId);
-           squadService.createSquadUpgrade(squadShipId, upgrade);
-       } else throw new RuntimeException("forbidden");
+           Upgrade upgrade = upgradeService.getUpgradeByNameId(upgradeName);
+           return squadService.addUpgradeToShipBySquadName(squadName, username, shipEntryId, upgrade);
+       } else throw new ForbiddenException();
     }
 
-    @GetMapping("/{id}/squad_upgrade/{squadUpgradeId}")
-    public SquadUpgrade getSquadUpgrade(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("squadUpgradeId") final String squadUpgradeId) {
-        Squad squad = squadService.getSquadById(id);
+    @DeleteMapping("/{name}/ship_entry/{shipEntryId}/upgrade/{upgradeName}")
+    public Squad.ShipEntry deleteSquadUpgrade(@PathVariable("username") final String username, @PathVariable("name") final String squadName, @PathVariable("shipEntryId") final String shipEntryId, @PathVariable("upgradeName") final String upgradeName) throws NotFoundException, ForbiddenException {
+        Squad squad = squadService.getSquadBySquadName(squadName, username);
         if (squad.getUsername().equals(username)) {
-            return squadService.getSquadUpgrade(squadUpgradeId);
-        } else throw new RuntimeException("forbidden");
-    }
-
-    @GetMapping("/{id}/squad_ship/{squadShipId}/squad_upgrades")
-    public List<SquadUpgrade> getSquadUpgrades(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("squadShipId") final String squadShipId) {
-        Squad squad = squadService.getSquadById(id);
-        if (squad.getUsername().equals(username)) {
-            return squadService.getSquadUpgrades(squadShipId);
-        } else throw new RuntimeException("forbidden");
-    }
-
-    @DeleteMapping("/{id}/squad_upgrade/{squadUpgradeId}")
-    public void deleteSquadUpgrade(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("squadUpgradeId") final String squadUpgradeId) {
-        Squad squad = squadService.getSquadById(id);
-        if (squad.getUsername().equals(username)) {
-            squadService.deleteSquadUpgrade(squadUpgradeId);
-        } else throw new RuntimeException("forbidden");
-    }
-
-    @DeleteMapping("/{id}/squad_ship/{squadShipId}/upgrades")
-    public void deleteSquadUpgradesFromSquadShip(@PathVariable("username") final String username, @PathVariable("id") final String id, @PathVariable("squadShipId") final String squadShipId) {
-        Squad squad = squadService.getSquadById(id);
-        if (squad.getUsername().equals(username)) {
-            squadService.deleteSquadUpgrades(squadShipId);
-        } else throw new RuntimeException("forbidden");
+            Upgrade upgrade = upgradeService.getUpgradeByNameId(upgradeName);
+            return squadService.removeUpgradeFromShipBySquadName(squadName, username, shipEntryId, upgrade);
+        } else throw new ForbiddenException();
     }
 }

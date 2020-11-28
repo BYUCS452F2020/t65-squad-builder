@@ -1,5 +1,6 @@
 package com.tcashcroft.t65.controller;
 
+import com.tcashcroft.t65.exception.NotFoundException;
 import com.tcashcroft.t65.model.Inventory;
 import com.tcashcroft.t65.model.Ship;
 import com.tcashcroft.t65.model.Upgrade;
@@ -26,45 +27,47 @@ public class InventoryController {
 
     @PostMapping("/user/{username}")
     public Inventory createInventory(@PathVariable("username") final String username) {
-        return inventoryService.createInventory(username);
+        Inventory inventory = new Inventory();
+        inventory.setUsername(username);
+        return inventoryService.createInventory(inventory);
     }
 
     @GetMapping("/user/{username}")
-    public Inventory getInventoryByUsername(@PathVariable("username") final String username) {
+    public Inventory getInventoryByUsername(@PathVariable("username") final String username) throws NotFoundException {
         return inventoryService.getInventoryByUsername(username);
     }
 
-    @GetMapping("/{id}")
-    public Inventory getInventoryById(@PathVariable("id") final String id) {
-        return inventoryService.getInventoryById(id);
+    @PostMapping("/user/{username}/ship/{shipNameId}")
+    public void addShip(@PathVariable("username") final String username, @PathVariable("shipNameId") final String shipNameId) throws NotFoundException {
+        Ship ship = shipService.getShip(shipNameId);
+        inventoryService.addShipToInventoryByUsername(username, ship);
     }
 
-    @PostMapping("/{id}/ship/{shipId}")
-    public void addShip(@PathVariable("id") final String id, @PathVariable("shipId") final String shipId) {
-        Ship ship = shipService.getShip(shipId);
-        inventoryService.createOrIncrementShipInventory(id, ship);
+    @DeleteMapping("/user/{username}/ship/{shipNameId}")
+    public void removeShip(@PathVariable("username") final String username, @PathVariable("shipNameId") final String shipNameId) throws NotFoundException {
+        Ship ship = shipService.getShipByNameId(shipNameId);
+        inventoryService.removeShipFromInventoryByUsername(username, ship);
     }
 
-    @DeleteMapping("/{id}/ship/{shipId}")
-    public void removeShip(@PathVariable("id") final String id, @PathVariable("shipId") final String shipId) {
-        Ship ship = shipService.getShip(shipId);
-        inventoryService.deleteOrDecrementShipInventory(id, ship);
+    @GetMapping("/user/{username}/ships")
+    public List<Ship> getShips(@PathVariable("username") final String username) throws NotFoundException {
+        return inventoryService.getInventoryByUsername(username).getShips();
     }
 
-    @GetMapping("/{id}/ships")
-    public List<Ship> getShips(@PathVariable("id") final String id) {
-        return inventoryService.readAllShipInventory(id);
-    }
-
-    @PostMapping("/{id}/upgrade/{upgradeId}")
-    public void addUpgrade(@PathVariable("id") final String id, @PathVariable("upgradeId") final String upgradeId) {
+    @PostMapping("/user/{username}/upgrade/{upgradeId}")
+    public void addUpgrade(@PathVariable("username") final String username, @PathVariable("upgradeId") final String upgradeId) throws NotFoundException {
         Upgrade upgrade = upgradeService.getUpgrade(upgradeId);
-        inventoryService.createOrIncrementUpgradeInventory(id, upgrade);
+        inventoryService.addUpgradeToInventoryByUsername(username, upgrade);
     }
 
-    @DeleteMapping("/{id}/upgrade/{upgradeId}")
-    public void removeUpgrade(@PathVariable("id") final String id, @PathVariable("upgradeId") final String upgradeId) {
+    @DeleteMapping("/user/{username}/upgrade/{upgradeId}")
+    public Inventory removeUpgrade(@PathVariable("username") final String username, @PathVariable("upgradeId") final String upgradeId) throws NotFoundException {
         Upgrade upgrade = upgradeService.getUpgrade(upgradeId);
-        inventoryService.deleteOrDecrementUpgradeInventory(id, upgrade);
+        return inventoryService.removeUpgradeFromInventoryByUsername(username, upgrade);
+    }
+
+    @GetMapping("/user/{username}/upgrades")
+    public List<Upgrade> getUpgrades(@PathVariable("username") final String username) throws NotFoundException {
+        return inventoryService.getInventoryByUsername(username).getUpgrades();
     }
 }

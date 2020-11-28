@@ -20,10 +20,6 @@
   <url>https://github.com/BYUCS452F2020/t65-squad-builder</url>
 
   <properties>
-<!--     <frontend.install.phase>generate-resources</frontend.install.phase>-->
-<!--     <frontend.package.phase>prepare-package</frontend.package.phase>-->
-<!--     <frontend.contextRoot>t65-squad-builder</frontend.contextRoot>-->
-<!--     <frontend.name>t65-squad-builder</frontend.name>-->
     <scm.repository>github.com/BYUCS452F2020/t65-squad-builder</scm.repository>
   </properties>
 
@@ -49,15 +45,21 @@
       <artifactId>org.eclipse.jgit</artifactId>
       <version>5.9.0.202009080501-r</version>
     </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <scope>runtime</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.data</groupId>-->
+<!--      <artifactId>spring-data-mongodb</artifactId>-->
+<!--      <version>3.1.1</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
     </dependency>
+    <dependency>
+      <groupId>edu.byu.hbll</groupId>
+      <artifactId>misc</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+
 
     <dependency>
       <groupId>commons-io</groupId>

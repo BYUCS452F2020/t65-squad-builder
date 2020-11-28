@@ -1,14 +1,14 @@
 package com.tcashcroft.t65.service;
 
-import com.tcashcroft.t65.db.mysql.SquadDao;
-import com.tcashcroft.t65.db.mysql.SquadShipDao;
-import com.tcashcroft.t65.db.mysql.SquadUpgradeDao;
+import com.tcashcroft.t65.db.mongo.SquadRepository;
+import com.tcashcroft.t65.exception.NotFoundException;
+import com.tcashcroft.t65.exception.UpgradeNotAllowedException;
 import com.tcashcroft.t65.model.*;
+import edu.byu.hbll.misc.Strings;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,88 +16,151 @@ import java.util.Optional;
 public class SquadService {
 
     @Autowired
-    private SquadDao squadDao;
+    private SquadRepository squadDao;
 
-    @Autowired
-    private SquadShipDao squadShipDao;
-
-    @Autowired
-    private SquadUpgradeDao squadUpgradeDao;
-
-    public Squad getSquadById(String squadId) {
-        Optional<Squad> squadOptional = squadDao.readSquad(squadId);
-        if (squadOptional.isEmpty()) {
-            return null;
-        } else {
-            return squadOptional.get();
-        }
+    public Squad getSquadById(String squadId) throws NotFoundException {
+        return squadDao.findById(squadId).orElseThrow(NotFoundException::new);
     }
 
-    public Squad getSquadBySquadName(String squadName, String username) {
-        Optional<Squad> squadOptional = squadDao.readSquad(username, squadName);
-        if (squadOptional.isEmpty()) {
-            return null;
-        } else {
-            return squadOptional.get();
-        }
+    public Squad getSquadBySquadName(String squadName, String username) throws NotFoundException {
+        return squadDao.findSquadByUsernameAndName(username, squadName).orElseThrow(NotFoundException::new);
     }
 
-    public Squad createSquad(String squadName, String username, Utils.Faction faction) {
-        squadDao.createSquad(username, squadName, faction);
-        return getSquadBySquadName(squadName, username);
+    public Squad createSquad(Squad squad) {
+        return squadDao.save(squad);
     }
 
     public void deleteSquadBySquadName(String squadName, String username) {
+        squadDao.removeSquadByUsernameAndName(username, squadName);
+    }
+
+    public Squad updateSquad(Squad squad) {
+        return squadDao.save(squad);
+    }
+
+    public Squad.ShipEntry addShipToSquadBySquadName(String squadName, String username, Ship ship) throws NotFoundException {
         Squad squad = getSquadBySquadName(squadName, username);
-        squadDao.deleteSquad(squad.getId());
+        return addShipToSquad(squad, ship);
     }
 
-    public void deleteSquadById(String squadId) {
-        squadDao.deleteSquad(squadId);
+    private Squad.ShipEntry addShipToSquad(Squad squad, Ship ship) {
+        Squad.ShipEntry shipEntry = squad.addShip(ship);
+        squadDao.save(squad);
+        return shipEntry;
     }
 
-    /* TODO change controller classes to accept full classes, not primitives. I.E. this method should accept
-        a Squad and a Ship rather than a String and a Ship. Since the fully created objects are currently
-        guaranteed to come out of the controllers, having a full object should guarantee the presence of the
-        appropriate identifiers. */
-    public void createSquadShip(String squadId, Ship ship) {
-        squadShipDao.createSquadShip(squadId, ship);
+    public Squad removeShipEntryFromSquadBySquadName(String squadName, String username, String shipEntryId) throws NotFoundException {
+        Squad squad = getSquadBySquadName(squadName, username);
+        squad.removeShip(shipEntryId);
+        squadDao.save(squad);
+        return squad;
     }
 
-    public SquadShip getSquadShip(String squadShipId) {
-        // TODO the custom exceptions should be thrown by the controllers
-        return squadShipDao.readSquadShip(squadShipId).orElseThrow(() -> new RuntimeException());
+    public Squad.ShipEntry addUpgradeToShipBySquadName(String squadName, String username, String shipEntryId, Upgrade upgrade) throws NotFoundException, UpgradeNotAllowedException {
+        Squad squad = getSquadBySquadName(squadName, username);
+        Squad.ShipEntry entry = squad.getShips().stream().filter(it -> it.getId().equals(shipEntryId)).findAny().orElseThrow(() -> new NotFoundException());
+        return addUpgradeToShip(squad, entry, upgrade);
     }
 
-    public List<SquadShip> getSquadShips(String squadId) {
-        return squadShipDao.readSquadShips(squadId);
+    private Squad.ShipEntry addUpgradeToShip(Squad squad, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException, UpgradeNotAllowedException {
+        Optional<Squad.ShipEntry> shipEntryOptional = squad.getShips().stream().filter(it -> shipEntry.getId().equals(it.getId())).findFirst();
+        Squad.ShipEntry entryToModify = shipEntryOptional.orElseThrow(() -> new NotFoundException());
+
+        if (upgradeMeetsShipCriteria(entryToModify, upgrade)) {
+            entryToModify.getUpgrades().add(upgrade);
+            squadDao.save(squad);
+            return entryToModify;
+        } else throw new UpgradeNotAllowedException();
     }
 
-    public void deleteSquadShips(String squadId) {
-        squadShipDao.deleteSquadShips(squadId);
+    private boolean upgradeMeetsShipCriteria(Squad.ShipEntry shipEntry, Upgrade upgrade) {
+        Ship ship = shipEntry.getShip();
+        if (ship.getSlots().containsKey(upgrade.getUpgradeType())) {
+            int maxSlots = ship.getSlots().get(upgrade.getUpgradeType());
+            int usedSlots = shipEntry.getUpgrades().stream().filter(it -> it.getUpgradeType().equals(upgrade.getUpgradeType())).mapToInt(it -> 1).sum();
+            int availableSlots = maxSlots - usedSlots;
+            if (availableSlots > 0 && upgrade.getNameLimit() < usedSlots) {
+                if (Strings.isBlank(upgrade.getShipType())) {
+                    // TODO handle hyperspace legality and other ship restrictions
+                    return true;
+                } else {
+                    if (!upgrade.getShipType().equals(ship.getShipType())) {
+                        return false;
+                    }
+                }
+            } else return false;
+        } else return false;
+        return true;
     }
 
-    public void deleteSquadShip(String squadShipId) {
-        squadShipDao.deleteSquadShip(squadShipId);
+    public Squad.ShipEntry removeUpgradeFromShipBySquadName(String squadName, String username, String shipEntryId, Upgrade upgrade) throws NotFoundException {
+        Squad squad = getSquadBySquadName(squadName, username);
+        Squad.ShipEntry entry = squad.getShips().stream().filter(it -> it.getId().equals(shipEntryId)).findAny().orElseThrow(() -> new NotFoundException());
+        return removeUpgradeFromShip(squad, entry, upgrade);
     }
 
-    public void createSquadUpgrade(String squadShipId, Upgrade upgrade) {
-        squadUpgradeDao.createSquadUpgrade(squadShipId, upgrade);
+    private Squad.ShipEntry removeUpgradeFromShip(Squad squad, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+        Optional<Squad.ShipEntry> shipEntryOptional = squad.getShips().stream().filter(it -> shipEntry.getId().equals(it.getId())).findFirst();
+        Squad.ShipEntry entryToModify = shipEntryOptional.orElseThrow(() -> new NotFoundException());
+        entryToModify.getUpgrades().remove(upgrade);
+        squadDao.save(squad);
+        return entryToModify;
     }
 
-    public void deleteSquadUpgrade(String squadUpgradeId) {
-        squadUpgradeDao.deleteSquadUpgrade(squadUpgradeId);
-    }
+//    private Squad.ShipEntry copyShipEntry(Squad squad, Squad.ShipEntry shipEntry) {
+//        Squad.ShipEntry copiedEntry = squad.addShip(shipEntry.getShip());
+//        copiedEntry.getUpgrades().addAll(shipEntry.getUpgrades());
+//        squadDao.save(squad);
+//        return copiedEntry;
+//    }
 
-    public void deleteSquadUpgrades(String squadShipId) {
-        squadUpgradeDao.deleteSquadUpgrades(squadShipId);
-    }
+//    public void deleteSquadById(String squadId) {
+//        squadDao.removeById(squadId);
+//    }
 
-    public SquadUpgrade getSquadUpgrade(String squadUpgradeId) {
-        return squadUpgradeDao.readSquadUpgrade(squadUpgradeId).orElseThrow(() -> new RuntimeException());
-    }
+//    public Squad.ShipEntry addShipToSquadBySquadId(String squadId, Ship ship) throws NotFoundException {
+//        Squad squad = getSquadById(squadId);
+//        return addShipToSquad(squad, ship);
+//    }
 
-    public List<SquadUpgrade> getSquadUpgrades(String squadShipId) {
-        return squadUpgradeDao.readSquadUpgrades(squadShipId);
-    }
+//    public Squad.ShipEntry addUpgradeToShipBySquadId(String squadId, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+//        Squad squad = getSquadById(squadId);
+//        return addUpgradeToShip(squad, shipEntry, upgrade);
+//    }
+
+//    public Squad.ShipEntry addUpgradeToShipBySquadName(String squadName, String username, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+//        Squad squad = getSquadBySquadName(squadName, username);
+//        return addUpgradeToShip(squad, shipEntry, upgrade);
+//    }
+
+//    public Squad.ShipEntry addUpgradeToShipBySquadId(String squadId, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+//        Squad squad = getSquadById(squadId);
+//        return addUpgradeToShip(squad, shipEntry, upgrade);
+//    }
+
+//    public Squad.ShipEntry addUpgradeToShipBySquadName(String squadName, String username, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+//        Squad squad = getSquadBySquadName(squadName, username);
+//        return addUpgradeToShip(squad, shipEntry, upgrade);
+//    }
+
+//    public Squad.ShipEntry copyShipEntryBySquadId(String squadId, Squad.ShipEntry shipEntry) throws NotFoundException {
+//        Squad squad = getSquadById(squadId);
+//        return copyShipEntry(squad, shipEntry);
+//    }
+
+//    public Squad.ShipEntry copyShipEntryBySquadName(String squadName, String username, Squad.ShipEntry shipEntry) throws NotFoundException {
+//        Squad squad = getSquadBySquadName(squadName, username);
+//        return copyShipEntry(squad, shipEntry);
+//    }
+
+//    public Squad.ShipEntry removeUpgradeFromShipBySquadId(String squadId, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+//        Squad squad = getSquadById(squadId);
+//        return removeUpgradeFromShip(squad, shipEntry, upgrade);
+//    }
+
+//    public Squad.ShipEntry removeUpgradeFromShipBySquadName(String squadName, String username, Squad.ShipEntry shipEntry, Upgrade upgrade) throws NotFoundException {
+//        Squad squad = getSquadBySquadName(squadName, username);
+//        return removeUpgradeFromShip(squad, shipEntry, upgrade);
+//    }
+
 }

@@ -1,6 +1,8 @@
-package com.tcashcroft.t65.harvester.model;
+package com.tcashcroft.t65.model.harvester;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.tcashcroft.t65.model.shared.Action;
+import com.tcashcroft.t65.model.shared.Force;
+import com.tcashcroft.t65.model.shared.ShipAbility;
 import lombok.Data;
 
 import java.util.List;
@@ -16,7 +18,6 @@ public class Ship {
    private List<String> dialCodes;
    private String faction;
    private List<Map<String, String>> stats;
-//   private List<Map<String, String>> actions;
    private List<Action> actions;
    private String icon;
    private List<Pilot> pilots;
@@ -37,25 +38,5 @@ public class Ship {
       private String image;
       private Force force;
       private ShipAbility shipAbility;
-   }
-
-   @Data
-   public static class Force {
-      private int value;
-      private int recovers;
-      private List<String> side;
-   }
-
-   @Data
-   public static class Action {
-      private String difficulty;
-      private String type;
-      private Action linked;
-   }
-
-   @Data
-   public static class ShipAbility {
-      private String name;
-      private String text;
    }
 }

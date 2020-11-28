@@ -1,9 +1,9 @@
-package com.tcashcroft.t65.harvester.model;
+package com.tcashcroft.t65.model.harvester;
 
 import lombok.Data;
 
 @Data
-public class Action {
+public class Faction {
     private String name;
     private String xws;
     private int ffg;

@@ -1,4 +1,4 @@
-package com.tcashcroft.t65.harvester.model;
+package com.tcashcroft.t65.model.harvester;
 
 import lombok.Data;
 

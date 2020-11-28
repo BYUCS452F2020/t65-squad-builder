@@ -1,12 +1,17 @@
 package com.tcashcroft.t65.harvester;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tcashcroft.t65.harvester.model.Action;
-import com.tcashcroft.t65.harvester.model.Faction;
-import com.tcashcroft.t65.harvester.model.Ship;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.tcashcroft.t65.db.mongo.ShipRepository;
+import com.tcashcroft.t65.db.mongo.SquadRepository;
+import com.tcashcroft.t65.db.mongo.UpgradeRepository;
+import com.tcashcroft.t65.model.harvester.Ship;
+import com.tcashcroft.t65.model.harvester.Upgrade;
+import edu.byu.hbll.json.UncheckedObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +23,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -30,9 +34,17 @@ public class GameDataHarvester {
     @Autowired
     private GameDataHarvesterConfiguration config;
 
+    @Autowired
+    ShipRepository shipRepository;
+
+    @Autowired
+    UpgradeRepository upgradeRepository;
+
     @PostConstruct
     public void postConstruct() throws Exception {
         cloneDataRepo();
+        shipRepository.saveAll(GameDataTransformer.transformShips(harvestShips()));
+        upgradeRepository.saveAll(GameDataTransformer.transformUpgrades(harvestUpgrades()));
     }
 
     public void cloneDataRepo() throws Exception {
@@ -43,36 +55,36 @@ public class GameDataHarvester {
         }
     }
 
-    public List<Faction> readFactions() throws Exception {
-        Path factionFilePath = Paths.get(config.dataRepoLocation.toString(), config.factionsPath.toString());
-        List<Faction> factions = config.mapper.treeToValue(config.mapper.readTree(factionFilePath.toFile()), List.class);
-        return factions;
-    }
-
-    public List<Action> readActions() throws Exception {
-        Path actionFilePath = Paths.get(config.dataRepoLocation.toString(), config.actionsPath.toString());
-        List<Action> actions = config.mapper.treeToValue(config.mapper.readTree(actionFilePath.toFile()), List.class);
-        return actions;
-    }
-
-    public List<Ship> readShips() throws Exception {
-        File shipDir = Paths.get(config.dataRepoLocation.toString(), config.pilotsPath.toString()).toFile();
-        if (shipDir.isDirectory()) {
-            List<Ship> ships = new ArrayList<>();
-            for (File subdir : shipDir.listFiles()) {
-                if (subdir.isDirectory()) {
-                    for (File file : subdir.listFiles()) {
-                        List<Ship> factionList = config.mapper.treeToValue(config.mapper.readTree(file), ships.getClass());
-                        ships.addAll(factionList);
-                    }
-                } else {
-                    List<Ship> factionList = config.mapper.treeToValue(config.mapper.readTree(subdir), ships.getClass());
-                    ships.addAll(factionList);
-                }
+    public List<Ship> harvestShips() {
+        List<Ship> ships = new ArrayList<>();
+        for (File subDir : Paths.get(config.dataRepoLocation.toString(), config.pilotsDir.toString()).toFile().listFiles()) {
+            String faction = subDir.getName().toUpperCase();
+            for (File shipFile : subDir.listFiles()) {
+                String shipType = FilenameUtils.getBaseName(shipFile.getName()).replaceAll("-", "_");
+                log.info("Parsing " + faction + " " + shipType);
+                Ship ship = config.mapper.readValue(shipFile, Ship.class);
+                ship.setType(shipType.toUpperCase());
+                ships.add(ship);
             }
-            return ships;
         }
-        return Collections.emptyList();
+        return ships;
+    }
+
+    public List<Upgrade> harvestUpgrades() {
+        List<Upgrade> upgrades = new ArrayList<>();
+        for (File upgradeFile : Paths.get(config.dataRepoLocation.toString(), config.upgradesDir.toString()).toFile().listFiles()) {
+            String upgradeType = FilenameUtils.getBaseName(upgradeFile.getName()).toUpperCase().replaceAll("-", "_");
+            log.info("Parsing upgrades " + upgradeType);
+            List<Upgrade> sublist = new ArrayList<>();
+            JsonNode upgradeData = config.mapper.readValue(upgradeFile, ArrayNode.class);
+            for (JsonNode node : upgradeData) {
+                Upgrade u = config.mapper.treeToValue(node, Upgrade.class);
+                u.setType(upgradeType);
+                sublist.add(u);
+            }
+            upgrades.addAll(sublist);
+        }
+        return upgrades;
     }
 
     @Data
@@ -83,7 +95,9 @@ public class GameDataHarvester {
         private Path factionsPath;
         private Path pilotsPath;
         private Path ffgXwsPath;
-        private ObjectMapper mapper;
+        private Path pilotsDir;
+        private Path upgradesDir;
+        private UncheckedObjectMapper mapper;
     }
 
 }
