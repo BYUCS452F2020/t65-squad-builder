@@ -4,6 +4,7 @@
   
   <property name="level" value="${com.tcashcroft.t65squadbuilder.log.level:-${edu.byu.hbll.default.log.level:-INFO}}" />
   <property name="appender" value="${com.tcashcroft.t65squadbuilder.log.appender:-${edu.byu.hbll.default.log.appender:-console}}" />
+<!--  <property name="appender" value="${com.tcashcroft.t65squadbuilder.log.appender:-${edu.byu.hbll.default.log.appender:-file}}" />-->
   <property name="dir" value="${com.tcashcroft.t65squadbuilder.log.dir:-${edu.byu.hbll.default.log.dir:-/srv/log}}" />
   <property name="kafka.servers" value="${com.tcashcroft.t65squadbuilder.log.kafka.servers:-${edu.byu.hbll.default.log.kafka.servers.ssl:-${edu.byu.hbll.default.log.kafka.servers:-localhost:9092}}}" />
   <property name="kafka.ssl" value="${com.tcashcroft.t65squadbuilder.log.kafka.ssl:-${edu.byu.hbll.default.log.kafka.ssl:-false}}" />

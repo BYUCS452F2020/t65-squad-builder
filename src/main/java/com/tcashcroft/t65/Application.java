@@ -1,7 +1,10 @@
 package com.tcashcroft.t65;
 
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
 import edu.byu.hbll.json.ObjectMapperFactory;
 import edu.byu.hbll.json.UncheckedObjectMapper;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableConfigurationProperties
 @EnableMongoRepositories
-public class Application {
+public class Application implements CommandLineRunner {
   
   /**
    * Launches this application.
@@ -27,11 +30,30 @@ public class Application {
    * @param args the command line arguments provided at runtime
    */
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+    SpringApplication.run(Application.class, args).close();
   }
 
   @Bean
   public UncheckedObjectMapper objectMapper() {
     return ObjectMapperFactory.newUnchecked();
+  }
+
+  @Override
+  public void run(String... args) throws Exception {
+    System.out.println("Args:");
+    for (String s : args) {
+      System.out.println("\t" + s);
+    }
+
+    DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory();
+    Terminal terminal = defaultTerminalFactory.createTerminal();
+    terminal.putCharacter('H');
+    terminal.putCharacter('e');
+    terminal.putCharacter('l');
+    terminal.putCharacter('l');
+    terminal.putCharacter('o');
+    terminal.putCharacter('\n');
+    terminal.flush();
+    Thread.sleep(2000);
   }
 }
