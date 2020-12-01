@@ -21,6 +21,7 @@
 
   <properties>
     <scm.repository>github.com/BYUCS452F2020/t65-squad-builder</scm.repository>
+    <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
   </properties>
 
   <scm>
