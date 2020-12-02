@@ -1,5 +1,9 @@
 package com.tcashcroft.t65.cli;
 
+import com.tcashcroft.t65.cli.client.InventoryClient;
+import com.tcashcroft.t65.cli.client.ShipClient;
+import com.tcashcroft.t65.cli.client.SquadClient;
+import com.tcashcroft.t65.cli.client.UpgradeClient;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,4 +36,5 @@ public class T65CliConfiguration {
     public String username() {
         return properties.getUsername();
     }
+
 }
