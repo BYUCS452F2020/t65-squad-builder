@@ -25,7 +25,7 @@ public class GameDataTransformer {
             Ship ship = new Ship();
             ship.setFaction(s.getFaction().replaceAll(" ", "_"));
             ship.setName(p.getName().replaceAll("\\\"", "").replaceAll("\"", ""));
-            ship.setNameId(ship.getName().replaceAll(" ", "_"));
+            ship.setNameId(p.getName().replaceAll("\\\"", "").replaceAll("\"", "").replaceAll(" ", "_"));
             ship.setShipType(s.getType());
             ship.setNameLimit(p.getLimited());
             ship.setCallSign(p.getCaption());
