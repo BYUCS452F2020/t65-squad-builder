@@ -8,6 +8,5 @@
 !/pom.xml
 !/README.md
 !/lombok.config
-!/t65-cli
 /src/main/resources/config
 /src/test/resources/config
