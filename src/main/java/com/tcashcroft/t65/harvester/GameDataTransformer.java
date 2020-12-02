@@ -23,7 +23,7 @@ public class GameDataTransformer {
         List<Ship> ships = new ArrayList<>();
         for (com.tcashcroft.t65.model.harvester.Ship.Pilot p : s.getPilots()) {
             Ship ship = new Ship();
-            ship.setFaction(s.getFaction());
+            ship.setFaction(s.getFaction().replaceAll(" ", "_"));
             ship.setName(p.getName());
             ship.setNameId(p.getName().replaceAll(" ", "_"));
             ship.setShipType(s.getType());

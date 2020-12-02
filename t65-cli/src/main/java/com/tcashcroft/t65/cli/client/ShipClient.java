@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +17,8 @@ import java.util.stream.Stream;
 @Slf4j
 @Data
 public class ShipClient extends T65Client {
+
+    private final Comparator<Ship> shipComparator = (Ship ship1, Ship ship2) -> ship1.getNameId().compareTo(ship2.getNameId());
 
     public Ship getShip(String shipName) {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "ship", "{shipName}").build(shipName);
@@ -27,13 +31,16 @@ public class ShipClient extends T65Client {
     public List<Ship> getShips() {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "ship", "all").build().toUri();
         Ship[] shipArray = restTemplate.getForObject(uri.toString(), Ship[].class);
-        return Stream.of(shipArray).sorted().collect(Collectors.toList());
+        return Stream.of(shipArray).sorted(shipComparator).collect(Collectors.toList());
     }
 
     public List<Ship> getShips(String filter, String id) {
-        URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "{filter}", "{id}").build(filter, id);
+        URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "ship", "{filter}", "{id}").build(filter, id);
+        log.info("{}", uri);
         Ship[] shipArray = restTemplate.getForObject(uri.toString(), Ship[].class);
-        return Stream.of(shipArray).sorted().collect(Collectors.toList());
+        log.info("{}", shipArray);
+        return Arrays.asList(shipArray).stream().sorted(shipComparator).collect(Collectors.toList());
+//        return Stream.of(shipArray).sorted(shipComparator).collect(Collectors.toList());
     }
 
     public List<String> getFactions() {
