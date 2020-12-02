@@ -40,7 +40,6 @@ public class ShipClient extends T65Client {
         Ship[] shipArray = restTemplate.getForObject(uri.toString(), Ship[].class);
         log.info("{}", shipArray);
         return Arrays.asList(shipArray).stream().sorted(shipComparator).collect(Collectors.toList());
-//        return Stream.of(shipArray).sorted(shipComparator).collect(Collectors.toList());
     }
 
     public List<String> getFactions() {

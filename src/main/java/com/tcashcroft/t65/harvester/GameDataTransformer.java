@@ -24,7 +24,7 @@ public class GameDataTransformer {
         for (com.tcashcroft.t65.model.harvester.Ship.Pilot p : s.getPilots()) {
             Ship ship = new Ship();
             ship.setFaction(s.getFaction().replaceAll(" ", "_"));
-            ship.setName(p.getName());
+            ship.setName(p.getName().replaceAll("\\\"", ""));
             ship.setNameId(p.getName().replaceAll(" ", "_"));
             ship.setShipType(s.getType());
             ship.setNameLimit(p.getLimited());
