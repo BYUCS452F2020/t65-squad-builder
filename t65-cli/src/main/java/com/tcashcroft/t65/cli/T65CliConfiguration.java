@@ -1,13 +1,35 @@
 package com.tcashcroft.t65.cli;
 
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
-/** Spring configuration for the application. */
+import java.net.URI;
+
+/**
+ * Spring configuration for the application.
+ */
 @Configuration
+@Setter
 public class T65CliConfiguration {
 
-  private T65CliProperties properties;
+    @Autowired
+    private T65CliProperties properties;
 
-  // TODO: If your application requires unique configuration, define the config beans here.  If your
-  //  configuration is particularly complex, you can define additional config files.
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public URI squadBuilderUrl() {
+        return URI.create(properties.getSquadBuilderUrl());
+    }
+
+    @Bean
+    public String username() {
+        return properties.getUsername();
+    }
 }

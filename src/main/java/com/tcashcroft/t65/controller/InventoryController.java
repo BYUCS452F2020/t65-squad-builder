@@ -38,15 +38,15 @@ public class InventoryController {
     }
 
     @PostMapping("/user/{username}/ship/{shipNameId}")
-    public void addShip(@PathVariable("username") final String username, @PathVariable("shipNameId") final String shipNameId) throws NotFoundException {
+    public Inventory addShip(@PathVariable("username") final String username, @PathVariable("shipNameId") final String shipNameId) throws NotFoundException {
         Ship ship = shipService.getShip(shipNameId);
-        inventoryService.addShipToInventoryByUsername(username, ship);
+        return inventoryService.addShipToInventoryByUsername(username, ship);
     }
 
     @DeleteMapping("/user/{username}/ship/{shipNameId}")
-    public void removeShip(@PathVariable("username") final String username, @PathVariable("shipNameId") final String shipNameId) throws NotFoundException {
+    public Inventory removeShip(@PathVariable("username") final String username, @PathVariable("shipNameId") final String shipNameId) throws NotFoundException {
         Ship ship = shipService.getShipByNameId(shipNameId);
-        inventoryService.removeShipFromInventoryByUsername(username, ship);
+        return inventoryService.removeShipFromInventoryByUsername(username, ship);
     }
 
     @GetMapping("/user/{username}/ships")
@@ -55,9 +55,9 @@ public class InventoryController {
     }
 
     @PostMapping("/user/{username}/upgrade/{upgradeId}")
-    public void addUpgrade(@PathVariable("username") final String username, @PathVariable("upgradeId") final String upgradeId) throws NotFoundException {
+    public Inventory addUpgrade(@PathVariable("username") final String username, @PathVariable("upgradeId") final String upgradeId) throws NotFoundException {
         Upgrade upgrade = upgradeService.getUpgrade(upgradeId);
-        inventoryService.addUpgradeToInventoryByUsername(username, upgrade);
+        return inventoryService.addUpgradeToInventoryByUsername(username, upgrade);
     }
 
     @DeleteMapping("/user/{username}/upgrade/{upgradeId}")
