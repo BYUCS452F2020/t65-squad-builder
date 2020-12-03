@@ -11,10 +11,22 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Data
 public class SquadClient extends T65Client {
+
+    public List<Squad> getSquads() {
+        URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "user", "{username}", "squad", "all").build(username);
+        Squad[] squads = restTemplate.getForObject(uri.toString(), Squad[].class);
+        return Arrays.asList(squads).stream().sorted((squad1, squad2) -> {
+            int res = squad1.getFaction().compareTo(squad2.getFaction());
+            if (res == 0) {
+                return squad1.getName().compareTo(squad2.getName());
+            } else return res;
+        }).collect(Collectors.toList());
+    }
 
     public Squad getSquad(String name) {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "user", "{username}", "squad", "{squadName}").build(username, name);
