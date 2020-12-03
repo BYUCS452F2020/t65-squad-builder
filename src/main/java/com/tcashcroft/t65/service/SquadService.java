@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +18,10 @@ public class SquadService {
 
     @Autowired
     private SquadRepository squadDao;
+
+    public List<Squad> getSquads(String username) {
+        return squadDao.findSquadsByUsername(username);
+    }
 
     public Squad getSquadById(String squadId) throws NotFoundException {
         return squadDao.findById(squadId).orElseThrow(NotFoundException::new);

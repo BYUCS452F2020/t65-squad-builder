@@ -35,6 +35,11 @@ public class SquadController {
         } else throw new ForbiddenException();
     }
 
+    @GetMapping("/all")
+    public List<Squad> getSquads(@PathVariable("username") final String username) {
+        return squadService.getSquads(username);
+    }
+
     @GetMapping("/{name}")
     public Squad getSquadBySquadName(@PathVariable("username") final String username, @PathVariable("name") final String squadName) throws NotFoundException, ForbiddenException {
         Squad squad = squadService.getSquadBySquadName(squadName, username);
