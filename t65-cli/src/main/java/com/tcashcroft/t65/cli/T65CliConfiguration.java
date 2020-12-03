@@ -1,9 +1,7 @@
 package com.tcashcroft.t65.cli;
 
-import com.tcashcroft.t65.cli.client.InventoryClient;
-import com.tcashcroft.t65.cli.client.ShipClient;
-import com.tcashcroft.t65.cli.client.SquadClient;
-import com.tcashcroft.t65.cli.client.UpgradeClient;
+import edu.byu.hbll.json.ObjectMapperFactory;
+import edu.byu.hbll.json.UncheckedObjectMapper;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,4 +35,8 @@ public class T65CliConfiguration {
         return properties.getUsername();
     }
 
+    @Bean
+    public UncheckedObjectMapper mapper() {
+        return ObjectMapperFactory.newUnchecked();
+    }
 }
