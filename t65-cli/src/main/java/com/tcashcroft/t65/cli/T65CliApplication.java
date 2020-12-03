@@ -36,22 +36,5 @@ public class T65CliApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-
-
-
-
-
-//    TextIO textio = TextIoFactory.getTextIO();
-//
-//    TextTerminal terminal = textio.getTextTerminal();
-//    terminal.printf("Starting up...\n");
-//
-//    String value = textio.newStringInputReader().withDefaultValue("none").read("Read");
-//
-//    terminal.printf("\nUser input was %s\n", value);
-//    terminal.dispose();
-
-
-    System.out.println("Ran");
   }
 }
