@@ -18,33 +18,33 @@ public class UpgradeController {
     @Autowired
     private UpgradeService upgradeService;
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public Upgrade getUpgrade(@PathVariable final String upgradeId) throws NotFoundException {
         return upgradeService.getUpgrade(upgradeId);
     }
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public List<Upgrade> getAllUpgrades() {
         return upgradeService.getAllUpgrades();
     }
 
-    @GetMapping("/faction/{faction}")
+    @GetMapping("faction/{faction}")
     public List<Upgrade> getAllUpgradesByFaction(@PathVariable final String faction) {
         return upgradeService.getAllFactionUpgrades(faction);
     }
 
-    @GetMapping("/ship/{shipType}")
+    @GetMapping("ship/{shipType}")
     public List<Upgrade> getAllUpgradesByShipType(@PathVariable final String shipType) {
         return upgradeService.getAllShipSpecificUpgrades(shipType);
     }
 
-    @GetMapping("/hyperspace/{legal}")
+    @GetMapping("hyperspace/{legal}")
     public List<Upgrade> getAllUpgradesByHyperSpaceLegality(@PathVariable final boolean legal) {
         return upgradeService.getAllHyperspaceLegalUpgrades(legal);
     }
 
-    @GetMapping("/name/{name}")
-    public Upgrade getUpgradeByName(@PathVariable final String upgradeName) throws NotFoundException {
-        return upgradeService.getUpgradeByNameId(upgradeName);
+    @GetMapping("name/{name}")
+    public Upgrade getUpgradeByName(@PathVariable final String name) throws NotFoundException {
+        return upgradeService.getUpgradeByNameId(name);
     }
 }

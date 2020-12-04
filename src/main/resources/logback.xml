@@ -77,7 +77,7 @@
   <logger name="org.apache" level="ERROR" />
   <logger name="org.hibernate" level="ERROR" />
   <logger name="org.mongodb" level="ERROR" />
-  <logger name="org.springframework" level="INFO" />
+<!--  <logger name="org.springframework" level="INFO" />-->
   <logger name="springfox.documentation" level="ERROR" />
 
 </configuration>
