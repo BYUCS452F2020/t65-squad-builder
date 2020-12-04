@@ -10,7 +10,7 @@
     <version>3.6.0</version>
   </parent>
 
-  <groupId>edu.byu.hbll</groupId>
+  <groupId>com.tcashcroft</groupId>
   <artifactId>t65-cli</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
@@ -20,8 +20,7 @@
   <url>https://gitlab.com/byuhbll/apps/${project.artifactId}</url>
 
   <properties>
-    <docker.repository>byuhbll/${project.artifactId}</docker.repository>
-    <scm.repository>gitlab.com/byuhbll/apps/${project.artifactId}</scm.repository>
+    <java.version>11</java.version>
   </properties>
 
   <scm>

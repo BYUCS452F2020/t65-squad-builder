@@ -5,7 +5,9 @@ import com.google.common.base.Strings;
 import com.tcashcroft.t65.cli.Utils;
 import com.tcashcroft.t65.cli.client.ShipClient;
 import com.tcashcroft.t65.cli.model.Ship;
+import com.tcashcroft.t65.cli.provider.FactionProvider;
 import com.tcashcroft.t65.cli.provider.ShipNameProvider;
+import com.tcashcroft.t65.cli.provider.ShipTypeProvider;
 import lombok.Data;
 import org.jline.terminal.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +31,14 @@ public class ShipCommands {
     @Autowired
     private Terminal terminal;
 
-    @ShellMethod("Get all ships or by ship type or faction if flagged as faction")
-    public List<String> getShips(@ShellOption(defaultValue="") String value, @ShellOption(arity=1, defaultValue="false") boolean faction) {
-        if (Strings.isNullOrEmpty(value)) {
-            return shipClient.getShips().stream().map(Ship::getNameId).collect(Collectors.toList());
+    @ShellMethod("Get all ships")
+    public List<String> getShips(@ShellOption(valueProvider = FactionProvider.class, defaultValue = "") String faction, @ShellOption(valueProvider = ShipTypeProvider.class, defaultValue = "") String shipType) {
+        if (!Strings.isNullOrEmpty(faction)) {
+           return shipClient.getShips("faction", faction).stream().map(Ship::getNameId).collect(Collectors.toList());
+        } else if (!Strings.isNullOrEmpty(shipType)) {
+            return shipClient.getShips("type", shipType).stream().map(Ship::getNameId).collect(Collectors.toList());
         } else {
-            if (faction) {
-                return shipClient.getShips("faction", value).stream().map(Ship::getNameId).collect(Collectors.toList());
-            } else {
-                return shipClient.getShips("type", value).stream().map(Ship::getNameId).collect(Collectors.toList());
-            }
+            return shipClient.getShips().stream().map(Ship::getNameId).collect(Collectors.toList());
         }
     }
 

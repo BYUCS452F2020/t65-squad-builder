@@ -26,7 +26,7 @@ public class UpgradeTypeProvider implements ValueProvider {
 
     @Override
     public boolean supports(MethodParameter parameter, CompletionContext completionContext) {
-        return true;
+        return parameter.getParameterName().equals("upgradeType");
     }
 
     @Override

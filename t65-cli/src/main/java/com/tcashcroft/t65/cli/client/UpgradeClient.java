@@ -27,7 +27,7 @@ public class UpgradeClient extends T65Client {
     }
 
     public List<Upgrade> getUpgrades(String filter, String id) {
-        URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment("upgrade", "{filter}", "{id}").build(filter, id);
+        URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "upgrade", "{filter}", "{id}").build(filter, id);
         Upgrade[] upgradeArray = restTemplate.getForObject(uri.toString(), Upgrade[].class);
         return Stream.of(upgradeArray).sorted().collect(Collectors.toList());
     }

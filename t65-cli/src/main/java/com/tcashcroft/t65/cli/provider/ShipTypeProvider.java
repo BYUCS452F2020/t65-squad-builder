@@ -24,7 +24,7 @@ public class ShipTypeProvider implements ValueProvider {
 
     @Override
     public boolean supports(MethodParameter parameter, CompletionContext completionContext) {
-        return true;
+        return parameter.getParameterName().equals("shipType");
     }
 
     @Override

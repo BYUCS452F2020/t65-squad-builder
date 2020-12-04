@@ -23,7 +23,7 @@ public class SquadShipEntryIdProvider implements ValueProvider {
 
     @Override
     public boolean supports(MethodParameter parameter, CompletionContext completionContext) {
-        return true;
+        return parameter.getParameterName().equals("shipEntryId");
     }
 
     @Override

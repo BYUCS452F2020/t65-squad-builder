@@ -26,21 +26,26 @@ public class SquadCommands {
 
     private Squad.ShipEntry shipEntry;
 
+    @ShellMethod("Get squads")
+    public List<Squad> getSquads() {
+        return squadClient.getSquads();
+    }
+
     @ShellMethod("Get squad")
-    public Squad getSquad(@ShellOption(valueProvider = SquadNameProvider.class) String name) {
-        squad = squadClient.getSquad(name);
+    public Squad getSquad(@ShellOption(valueProvider = SquadNameProvider.class) String squadName) {
+        squad = squadClient.getSquad(squadName);
         return squad;
     }
 
     @ShellMethod("Create squad")
-    public Squad createSquad(String name) {
-        squad = squadClient.createSquad(name);
+    public Squad createSquad(String squadName) {
+        squad = squadClient.createSquad(squadName);
         return squad;
     }
 
     @ShellMethod("Delete squad")
-    public void deleteSquad(@ShellOption(valueProvider = SquadNameProvider.class) String name) {
-        squadClient.deleteSquad(name);
+    public void deleteSquad(@ShellOption(valueProvider = SquadNameProvider.class) String squadName) {
+        squadClient.deleteSquad(squadName);
         squad = null;
     }
 

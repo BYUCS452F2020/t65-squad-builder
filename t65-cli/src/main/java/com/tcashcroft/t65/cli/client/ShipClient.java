@@ -22,8 +22,6 @@ public class ShipClient extends T65Client {
 
     public Ship getShip(String shipName) {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "ship", "{shipName}").build(shipName);
-        log.info("Ship Name: {}", shipName);
-        log.info("{}", uri);
         Ship ship = restTemplate.getForObject(uri.toString(), Ship.class);
         return ship;
     }
@@ -36,9 +34,7 @@ public class ShipClient extends T65Client {
 
     public List<Ship> getShips(String filter, String id) {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "ship", "{filter}", "{id}").build(filter, id);
-        log.info("{}", uri);
         Ship[] shipArray = restTemplate.getForObject(uri.toString(), Ship[].class);
-        log.info("{}", shipArray);
         return Arrays.asList(shipArray).stream().sorted(shipComparator).collect(Collectors.toList());
     }
 
@@ -49,8 +45,4 @@ public class ShipClient extends T65Client {
     public List<String> getShipTypes() {
         return getShips().stream().map(Ship::getShipType).sorted().distinct().collect(Collectors.toList());
     }
-
-//    public List<Ship> getShips(Object criteria) {
-//        return null;
-//    }
 }

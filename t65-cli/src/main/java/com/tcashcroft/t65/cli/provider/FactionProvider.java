@@ -2,6 +2,7 @@ package com.tcashcroft.t65.cli.provider;
 
 import com.tcashcroft.t65.cli.client.ShipClient;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.shell.CompletionContext;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @Component
 @Data
+@Slf4j
 public class FactionProvider implements ValueProvider {
 
     @Autowired
@@ -24,7 +26,7 @@ public class FactionProvider implements ValueProvider {
 
     @Override
     public boolean supports(MethodParameter parameter, CompletionContext completionContext) {
-        return true;
+        return parameter.getParameterName().equals("faction");
     }
 
     @Override

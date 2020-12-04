@@ -1,6 +1,8 @@
 package com.tcashcroft.t65.cli.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,8 @@ public class Squad {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ShipEntry {
         private com.tcashcroft.t65.cli.model.Ship ship;
         private List<com.tcashcroft.t65.cli.model.Upgrade> upgrades;
