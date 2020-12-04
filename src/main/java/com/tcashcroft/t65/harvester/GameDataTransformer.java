@@ -51,6 +51,7 @@ public class GameDataTransformer {
                     }
                 }
             }
+            ship.setSlots(slots);
 
             ship.setHyperspaceLegal(p.isHyperspace());
             ship.setExtendedLegal(true);
