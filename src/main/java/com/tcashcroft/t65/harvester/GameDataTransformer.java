@@ -47,7 +47,7 @@ public class GameDataTransformer {
                     if (slots.containsKey(slot)) {
                         slots.put(slot, slots.get(slot) + 1);
                     } else {
-                        slots.put(slot, 0);
+                        slots.put(slot, 1);
                     }
                 }
             }
