@@ -80,6 +80,9 @@ public class SquadService {
 
     private boolean upgradeMeetsShipCriteria(Squad.ShipEntry shipEntry, Upgrade upgrade) {
         Ship ship = shipEntry.getShip();
+        if (ship.getSlots() == null) {
+            return false;
+        }
         if (ship.getSlots().containsKey(upgrade.getUpgradeType())) {
             int maxSlots = ship.getSlots().get(upgrade.getUpgradeType());
             int usedSlots = shipEntry.getUpgrades().stream().filter(it -> it.getUpgradeType().equals(upgrade.getUpgradeType())).mapToInt(it -> 1).sum();
