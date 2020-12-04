@@ -87,7 +87,7 @@ public class SquadService {
             int maxSlots = ship.getSlots().get(upgrade.getUpgradeType());
             int usedSlots = shipEntry.getUpgrades().stream().filter(it -> it.getUpgradeType().equals(upgrade.getUpgradeType())).mapToInt(it -> 1).sum();
             int availableSlots = maxSlots - usedSlots;
-            if (availableSlots > 0 && upgrade.getNameLimit() < usedSlots) {
+            if (availableSlots > 0 && (upgrade.getNameLimit() > usedSlots || upgrade.getNameLimit() == 0)) {
                 if (Strings.isBlank(upgrade.getShipType())) {
                     // TODO handle hyperspace legality and other ship restrictions
                     return true;
