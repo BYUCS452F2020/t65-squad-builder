@@ -31,7 +31,4 @@ public class UpgradeClient extends T65Client {
         Upgrade[] upgradeArray = restTemplate.getForObject(uri.toString(), Upgrade[].class);
         return Stream.of(upgradeArray).sorted().collect(Collectors.toList());
     }
-//    public List<Upgrade> getUpgrades(Object criteria) {
-//        return null;
-//    }
 }
