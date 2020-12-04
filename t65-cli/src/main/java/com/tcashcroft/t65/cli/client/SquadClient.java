@@ -56,7 +56,6 @@ public class SquadClient extends T65Client {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "user", "{username}", "squad", "{name}", "ship", "{shipName}").build(username, squadName, shipName);
         ResponseEntity<Squad.ShipEntry> response = restTemplate.exchange(uri.toString(), HttpMethod.POST, HttpEntity.EMPTY, Squad.ShipEntry.class);
         return response.getBody();
-//        return restTemplate.postForObject(uri.toString(), "", Squad.ShipEntry.class);
     }
 
     public Squad.ShipEntry getShipEntry(String squadName, String shipEntryId) {

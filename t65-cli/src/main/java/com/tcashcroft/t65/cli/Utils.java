@@ -1,6 +1,8 @@
 package com.tcashcroft.t65.cli;
 
 import com.tcashcroft.t65.cli.model.Ship;
+import com.tcashcroft.t65.cli.model.Squad;
+import com.tcashcroft.t65.cli.model.Upgrade;
 import org.springframework.shell.table.*;
 
 import java.util.HashMap;
@@ -74,6 +76,58 @@ public class Utils {
         tableBuilder.addFullBorder(BorderStyle.fancy_light);
         tableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(15));
         return tableBuilder.build().render(80);
+    }
+
+    public static String getSquadAsTable(Squad squad) {
+        Object[][] props = new Object[squad.getShips().size() + 2][2];
+
+        int i = 0;
+        props[i][0] = squad.getName();
+        props[i++][0] = squad.getTotalPoints();
+
+        for (Squad.ShipEntry e : squad.getShips()) {
+            props[i][0] = e.getShip().getName();
+            props[i++][1] = getSquadShipEntryAsTable(e, 50);
+        }
+
+        ArrayTableModel model = new ArrayTableModel(props);
+        TableBuilder tableBuilder = new TableBuilder(model);
+        tableBuilder.addFullBorder(BorderStyle.fancy_light);
+        tableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(30));
+        tableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(50));
+        return tableBuilder.build().render(80);
+    }
+
+    public static String getSquadShipEntryAsTable(Squad.ShipEntry shipEntry) {
+        return getSquadShipEntryAsTable(shipEntry, 80);
+    }
+
+    private static String getSquadShipEntryAsTable(Squad.ShipEntry shipEntry, int size) {
+        Object[][] props = new Object[shipEntry.getUpgrades().size() + 2][2];
+        int i = 0;
+        props[i][0] = shipEntry.getShip().getName();
+        props[i++][1] = String.format("Cost: %d", shipEntry.getShip().getPointsCost() + shipEntry.getUpgrades().stream().mapToInt(u -> u.getCost().getValue()).sum());
+
+        Map<Upgrade, Integer> upgrades = new HashMap<>();
+        shipEntry.getUpgrades().stream().forEach(u -> {
+            if (upgrades.containsKey(u)) {
+                upgrades.put(u, upgrades.get(u) + 1);
+            } else {
+                upgrades.put(u, 1);
+            }
+        });
+
+        for (Map.Entry e : upgrades.entrySet()) {
+            props[i][0] = e.getKey();
+            props[i++][0] = e.getValue();
+        }
+
+        ArrayTableModel model = new ArrayTableModel(props);
+        TableBuilder tableBuilder = new TableBuilder(model);
+        tableBuilder.addFullBorder(BorderStyle.fancy_light);
+        tableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(30));
+        tableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(5));
+        return tableBuilder.build().render(size);
     }
 
     private static String getStat(String stat, List<Map<String, String>> stats) {

@@ -1,5 +1,6 @@
 package com.tcashcroft.t65.cli.command;
 
+import com.tcashcroft.t65.cli.Utils;
 import com.tcashcroft.t65.cli.client.SquadClient;
 import com.tcashcroft.t65.cli.model.Squad;
 import com.tcashcroft.t65.cli.provider.ShipNameProvider;
@@ -32,9 +33,13 @@ public class SquadCommands {
     }
 
     @ShellMethod("Get squad")
-    public Squad getSquad(@ShellOption(valueProvider = SquadNameProvider.class) String squadName) {
+    public Object getSquad(@ShellOption(valueProvider = SquadNameProvider.class) String squadName, @ShellOption(defaultValue = "false") boolean pretty) {
         squad = squadClient.getSquad(squadName);
-        return squad;
+        if (pretty) {
+            return Utils.getSquadAsTable(squad);
+        } else {
+           return squad;
+        }
     }
 
     @ShellMethod("Create squad")
