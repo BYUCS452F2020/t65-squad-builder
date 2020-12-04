@@ -72,7 +72,7 @@ public class GameDataTransformer {
             // TODO revisit this - they are a list in the source data
             upgrade.setFaction(null);
             upgrade.setName(s.getTitle().replaceAll("\\\"", ""));
-            upgrade.setNameId(upgrade.getName().replaceAll(" ", "_"));
+            upgrade.setNameId(upgrade.getName().replaceAll(" ", "_").replaceAll("\\.", ""));
             upgrade.setNameLimit(u.getLimited());
             // TODO this is also handled in the restrictions list
             upgrade.setShipType(null);
