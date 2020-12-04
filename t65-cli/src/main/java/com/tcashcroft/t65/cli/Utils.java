@@ -83,7 +83,7 @@ public class Utils {
 
         int i = 0;
         props[i][0] = squad.getName();
-        props[i++][0] = squad.getTotalPoints();
+        props[i++][1] = squad.getTotalPoints();
 
         for (Squad.ShipEntry e : squad.getShips()) {
             props[i][0] = e.getShip().getName();
@@ -105,7 +105,7 @@ public class Utils {
     private static String getSquadShipEntryAsTable(Squad.ShipEntry shipEntry, int size) {
         Object[][] props = new Object[shipEntry.getUpgrades().size() + 2][2];
         int i = 0;
-        props[i][0] = shipEntry.getShip().getName();
+        props[i][0] = shipEntry.getShip().getShipType();
         props[i++][1] = String.format("Cost: %d", shipEntry.getShip().getPointsCost() + shipEntry.getUpgrades().stream().mapToInt(u -> u.getCost().getValue()).sum());
 
         Map<Upgrade, Integer> upgrades = new HashMap<>();
@@ -119,14 +119,14 @@ public class Utils {
 
         for (Map.Entry e : upgrades.entrySet()) {
             props[i][0] = e.getKey();
-            props[i++][0] = e.getValue();
+            props[i++][1] = e.getValue();
         }
 
         ArrayTableModel model = new ArrayTableModel(props);
         TableBuilder tableBuilder = new TableBuilder(model);
         tableBuilder.addFullBorder(BorderStyle.fancy_light);
-        tableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(30));
-        tableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(5));
+        tableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(22));
+        tableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(8));
         return tableBuilder.build().render(size);
     }
 
