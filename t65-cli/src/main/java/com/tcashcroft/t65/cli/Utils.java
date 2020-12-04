@@ -117,9 +117,9 @@ public class Utils {
             }
         });
 
-        for (Map.Entry e : upgrades.entrySet()) {
-            props[i][0] = e.getKey();
-            props[i++][1] = e.getValue();
+        for (Map.Entry<Upgrade, Integer> e : upgrades.entrySet()) {
+            props[i][0] = e.getKey().getName();
+            props[i++][1] = "x " + e.getValue();
         }
 
         ArrayTableModel model = new ArrayTableModel(props);
