@@ -80,7 +80,6 @@ public class SquadController {
         if (squad.getUsername().equals(username)) {
             Ship ship = shipService.getShipByNameId(shipName);
             Squad.ShipEntry entry = squadService.addShipToSquadBySquadName(squadName, username, ship);
-            squadService.updateSquad(squad);
             return entry;
         } else throw new ForbiddenException();
     }
