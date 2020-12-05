@@ -33,6 +33,7 @@ public class Utils {
             ArrayTableModel model = new ArrayTableModel(ships);
             TableBuilder shipTableBuilder = new TableBuilder(model);
             shipTableBuilder.addFullBorder(BorderStyle.fancy_light);
+            shipTableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(73));
             shipTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
             shipString = shipTableBuilder.build().render(80);
         }
@@ -56,6 +57,7 @@ public class Utils {
             ArrayTableModel model2 = new ArrayTableModel(upgrades);
             TableBuilder upgradeTableBuilder = new TableBuilder(model2);
             upgradeTableBuilder.addFullBorder(BorderStyle.fancy_light);
+            upgradeTableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(73));
             upgradeTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
             upgradeString = upgradeTableBuilder.build().render(80);
         }
