@@ -2,8 +2,8 @@
 <!DOCTYPE configuration>
 <configuration>
   
-  <property name="level" value="${com.tcashcroft.t65.cli.log.level:-${edu.byu.hbll.default.log.level:-INFO}}" />
-<!--  <property name="level" value="${com.tcashcroft.t65.cli.log.level:-${edu.byu.hbll.default.log.level:-ERROR}}" />-->
+<!--  <property name="level" value="${com.tcashcroft.t65.cli.log.level:-${edu.byu.hbll.default.log.level:-INFO}}" />-->
+  <property name="level" value="${com.tcashcroft.t65.cli.log.level:-${edu.byu.hbll.default.log.level:-ERROR}}" />
   <property name="appender" value="${com.tcashcroft.t65.cli.log.appender:-${edu.byu.hbll.default.log.appender:-console}}" />
   <property name="dir" value="${com.tcashcroft.t65.cli.log.dir:-${edu.byu.hbll.default.log.dir:-/srv/log}}" />
   <property name="kafka.servers" value="${com.tcashcroft.t65.cli.log.kafka.servers:-${edu.byu.hbll.default.log.kafka.servers.ssl:-${edu.byu.hbll.default.log.kafka.servers:-localhost:9092}}}" />
