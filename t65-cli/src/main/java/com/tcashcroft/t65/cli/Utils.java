@@ -14,45 +14,51 @@ import java.util.stream.Collectors;
 public class Utils {
 
     public static String getInventoryAsTable(Inventory inventory) {
-        Object[][] ships = new Object[inventory.getShips().size()][2];
-        int i = 0;
-        Map<Ship, Integer> shipCounts = new HashMap<>();
-        inventory.getShips().forEach(s -> {
-            if (shipCounts.containsKey(s)) {
-                shipCounts.put(s, shipCounts.get(s) + 1);
-            } else {
-                shipCounts.put(s, 1);
+        String shipString = "No ships in inventory.";
+        if (!inventory.getShips().isEmpty()) {
+            Object[][] ships = new Object[inventory.getShips().size()][2];
+            int i = 0;
+            Map<Ship, Integer> shipCounts = new HashMap<>();
+            inventory.getShips().forEach(s -> {
+                if (shipCounts.containsKey(s)) {
+                    shipCounts.put(s, shipCounts.get(s) + 1);
+                } else {
+                    shipCounts.put(s, 1);
+                }
+            });
+            for (Map.Entry<Ship, Integer> s : shipCounts.entrySet()) {
+                ships[i][0] = s.getKey().getName();
+                ships[i++][1] = s.getValue();
             }
-        });
-        for (Map.Entry<Ship, Integer> s : shipCounts.entrySet()) {
-            ships[i][0] = s.getKey().getName();
-            ships[i++][1] = s.getValue();
+            ArrayTableModel model = new ArrayTableModel(ships);
+            TableBuilder shipTableBuilder = new TableBuilder(model);
+            shipTableBuilder.addFullBorder(BorderStyle.fancy_light);
+            shipTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
+            shipString = shipTableBuilder.build().render(80);
         }
-        ArrayTableModel model = new ArrayTableModel(ships);
-        TableBuilder shipTableBuilder = new TableBuilder(model);
-        shipTableBuilder.addFullBorder(BorderStyle.fancy_light);
-        shipTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
-        String shipString = shipTableBuilder.build().render(80);
 
-        Object[][] upgrades = new Object[inventory.getUpgrades().size()][2];
-        int j = 0;
-        Map<Upgrade, Integer> upgradeCounts = new HashMap<>();
-        inventory.getUpgrades().forEach(u -> {
-            if (upgradeCounts.containsKey(u)) {
-                upgradeCounts.put(u, upgradeCounts.get(u) + 1);
-            } else {
-                upgradeCounts.put(u, 1);
+        String upgradeString = "No upgrades in inventory";
+        if (!inventory.getUpgrades().isEmpty()) {
+            Object[][] upgrades = new Object[inventory.getUpgrades().size()][2];
+            int j = 0;
+            Map<Upgrade, Integer> upgradeCounts = new HashMap<>();
+            inventory.getUpgrades().forEach(u -> {
+                if (upgradeCounts.containsKey(u)) {
+                    upgradeCounts.put(u, upgradeCounts.get(u) + 1);
+                } else {
+                    upgradeCounts.put(u, 1);
+                }
+            });
+            for (Map.Entry<Upgrade, Integer> u : upgradeCounts.entrySet()) {
+                upgrades[j][0] = u.getKey().getName();
+                upgrades[j++][1] = u.getValue();
             }
-        });
-        for (Map.Entry<Upgrade, Integer> u : upgradeCounts.entrySet()) {
-            upgrades[j][0] = u.getKey().getName();
-            upgrades[j++][1] = u.getValue();
+            ArrayTableModel model2 = new ArrayTableModel(upgrades);
+            TableBuilder upgradeTableBuilder = new TableBuilder(model2);
+            upgradeTableBuilder.addFullBorder(BorderStyle.fancy_light);
+            upgradeTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
+            upgradeString = upgradeTableBuilder.build().render(80);
         }
-        ArrayTableModel model2 = new ArrayTableModel(upgrades);
-        TableBuilder upgradeTableBuilder = new TableBuilder(model2);
-        upgradeTableBuilder.addFullBorder(BorderStyle.fancy_light);
-        upgradeTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
-        String upgradeString = upgradeTableBuilder.build().render(80);
 
         return String.format("Ships:\n%s\n\nUpgrades:\n%s", shipString, upgradeString);
     }
