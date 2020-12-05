@@ -3,7 +3,6 @@ package com.tcashcroft.t65.harvester;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tcashcroft.t65.db.mongo.ShipRepository;
-import com.tcashcroft.t65.db.mongo.SquadRepository;
 import com.tcashcroft.t65.db.mongo.UpgradeRepository;
 import com.tcashcroft.t65.model.harvester.Ship;
 import com.tcashcroft.t65.model.harvester.Upgrade;

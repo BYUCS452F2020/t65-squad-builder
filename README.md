@@ -19,3 +19,27 @@ As an open source project offered free of charge no specific licensing is requir
 
 ## Technical
 The backend will be created using Java utilizing the Spring framework. The front end stack is TBD.
+
+
+# Setup
+A mongo database must be available for the backend to connect to. The configuration files for the application will define
+this connection. Java 11 + maven is required for building the application from source. The configuration file needs to 
+be accessible to the application (see Spring documentation for this). Also see the Spring Mongo DB documentation for 
+additional configuration. Application specific configuration is structured as follows:
+
+```yaml
+tcashcroft:
+  t65-squad-builder:
+    harvester:
+      xwing-data2:
+        data-repo-uri: "https://github.com/guidokessels/xwing-data2.git"
+        download-dir: "/path/for/downloading/data/repo"
+        data-repo-location: "xwing-data2"
+        actions-path: "data/actions/actions.json"
+        factions-path: "data/factions/factions.json"
+        pilots-dir: "data/pilots/"
+        upgrades-dir: "data/upgrades/"
+        ffg-xws-path: "data/ffg-xws.json"
+      upgrade-card-api-uri: "https://x-wing-api.fantasyflightgames.com/cards/upgrades/"
+      ship-card-api-uri: "https://x-wing-api.fantasyflightgames.com/cards/pilots/"
+```

@@ -1,13 +1,13 @@
 package com.tcashcroft.t65.model;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Data
 @Document
@@ -19,8 +19,6 @@ public class Squad {
     private String username;
     private String faction;
     private String name;
-//    @Indexed
-//    private SquadIdentifier identifier;
     private List<ShipEntry> ships = new ArrayList<>();
     private int totalPoints;
 
@@ -53,25 +51,6 @@ public class Squad {
         }
         this.totalPoints = points;
     }
-
-//    public String getUsername() {
-//        return identifier.getUsername();
-//    }
-//
-//    public String getFaction() {
-//        return identifier.getFaction();
-//    }
-//
-//    public String getName() {
-//        return identifier.getName();
-//    }
-
-//    @Data
-//    public static class SquadIdentifier {
-//        private String username;
-//        private String faction;
-//        private String name;
-//    }
 
     @Data
     public static class ShipEntry {
