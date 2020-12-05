@@ -1,5 +1,6 @@
 package com.tcashcroft.t65.cli.command;
 
+import com.tcashcroft.t65.cli.Utils;
 import com.tcashcroft.t65.cli.client.InventoryClient;
 import com.tcashcroft.t65.cli.model.Inventory;
 import com.tcashcroft.t65.cli.provider.ShipNameProvider;
@@ -21,8 +22,11 @@ public class InventoryCommands {
     private Inventory inventory;
 
     @ShellMethod("Get Inventory")
-    public Inventory getInventory() {
+    public Object getInventory(@ShellOption(defaultValue = "false") boolean pretty) {
         inventory = inventoryClient.getInventory();
+        if (pretty) {
+            return Utils.getInventoryAsTable(inventory);
+        }
         return inventory;
     }
 

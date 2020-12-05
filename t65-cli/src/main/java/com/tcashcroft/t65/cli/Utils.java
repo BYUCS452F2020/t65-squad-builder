@@ -1,5 +1,6 @@
 package com.tcashcroft.t65.cli;
 
+import com.tcashcroft.t65.cli.model.Inventory;
 import com.tcashcroft.t65.cli.model.Ship;
 import com.tcashcroft.t65.cli.model.Squad;
 import com.tcashcroft.t65.cli.model.Upgrade;
@@ -11,6 +12,51 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Utils {
+
+    public static String getInventoryAsTable(Inventory inventory) {
+        Object[][] ships = new Object[inventory.getShips().size() + 1][2];
+        int i = 0;
+        Map<Ship, Integer> shipCounts = new HashMap<>();
+        inventory.getShips().forEach(s -> {
+            if (shipCounts.containsKey(s)) {
+                shipCounts.put(s, shipCounts.get(s) + 1);
+            } else {
+                shipCounts.put(s, 1);
+            }
+        });
+        for (Map.Entry<Ship, Integer> s : shipCounts.entrySet()) {
+            ships[i][0] = s.getKey().getName();
+            ships[i++][1] = s.getValue();
+        }
+        ArrayTableModel model = new ArrayTableModel(ships);
+        TableBuilder shipTableBuilder = new TableBuilder(model);
+        shipTableBuilder.addFullBorder(BorderStyle.fancy_light);
+        shipTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
+        String shipString = shipTableBuilder.build().render(80);
+
+        Object[][] upgrades = new Object[inventory.getUpgrades().size() + 1][2];
+        int j = 0;
+        Map<Upgrade, Integer> upgradeCounts = new HashMap<>();
+        inventory.getUpgrades().forEach(u -> {
+            if (upgradeCounts.containsKey(u)) {
+                upgradeCounts.put(u, upgradeCounts.get(u) + 1);
+            } else {
+                upgradeCounts.put(u, 1);
+            }
+        });
+        for (Map.Entry<Upgrade, Integer> u : upgradeCounts.entrySet()) {
+            upgrades[j][0] = u.getKey().getName();
+            upgrades[j++][1] = u.getValue();
+        }
+        ArrayTableModel model2 = new ArrayTableModel(upgrades);
+        TableBuilder upgradeTableBuilder = new TableBuilder(model2);
+        upgradeTableBuilder.addFullBorder(BorderStyle.fancy_light);
+        upgradeTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
+        String upgradeString = upgradeTableBuilder.build().render(80);
+
+        return String.format("Ships:\n%s\n\nUpgrades:\n%s", shipString, upgradeString);
+    }
+
     public static String getShipAsTable(Ship ship) {
         Object[][] entityProperties = new Object[7][2];
         int i = 0;
@@ -79,11 +125,11 @@ public class Utils {
     }
 
     public static String getSquadAsTable(Squad squad) {
-        Object[][] props = new Object[squad.getShips().size() + 2][2];
+        Object[][] props = new Object[squad.getShips().size() + 1][2];
 
         int i = 0;
         props[i][0] = squad.getName();
-        props[i++][1] = squad.getTotalPoints();
+        props[i++][1] = "Total Cost: " + squad.getTotalPoints();
 
         for (Squad.ShipEntry e : squad.getShips()) {
             props[i][0] = e.getShip().getName();
@@ -103,7 +149,7 @@ public class Utils {
     }
 
     private static String getSquadShipEntryAsTable(Squad.ShipEntry shipEntry, int size) {
-        Object[][] props = new Object[shipEntry.getUpgrades().size() + 2][2];
+        Object[][] props = new Object[shipEntry.getUpgrades().size() + 1][2];
         int i = 0;
         props[i][0] = shipEntry.getShip().getShipType();
         props[i++][1] = String.format("Cost: %d", shipEntry.getShip().getPointsCost() + shipEntry.getUpgrades().stream().mapToInt(u -> u.getCost().getValue()).sum());
