@@ -60,7 +60,7 @@ public class Utils {
             upgradeString = upgradeTableBuilder.build().render(80);
         }
 
-        return String.format("Ships:\n%s\n\nUpgrades:\n%s", shipString, upgradeString);
+        return String.format("\nShips:\n%s\nUpgrades:\n%s\n", shipString, upgradeString);
     }
 
     public static String getShipAsTable(Ship ship) {
