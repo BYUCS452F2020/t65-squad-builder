@@ -17,7 +17,6 @@ public class InventoryClient extends T65Client {
 
     public Inventory getInventory() {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "inventory", "user", "{username}").build(username);
-        System.out.println("URI: " + uri.toString());
         try {
             Inventory inventory = restTemplate.getForObject(uri.toString(), Inventory.class);
             return inventory;
@@ -28,7 +27,6 @@ public class InventoryClient extends T65Client {
 
     public Inventory addShipToInventory(String shipName) {
         URI uri = UriComponentsBuilder.fromUri(squadBuilderUrl).pathSegment(CONTEXT_ROOT, "inventory", "user", "{username}", "ship", "{shipName}").build(username, shipName);
-        System.out.println(uri.toString());
         Inventory inventory = restTemplate.postForObject(uri.toString(), null, Inventory.class);
         return inventory;
     }
