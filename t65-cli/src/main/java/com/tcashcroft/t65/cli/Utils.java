@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Utils {
 
     public static String getInventoryAsTable(Inventory inventory) {
-        Object[][] ships = new Object[inventory.getShips().size() + 1][2];
+        Object[][] ships = new Object[inventory.getShips().size()][2];
         int i = 0;
         Map<Ship, Integer> shipCounts = new HashMap<>();
         inventory.getShips().forEach(s -> {
@@ -34,7 +34,7 @@ public class Utils {
         shipTableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(7));
         String shipString = shipTableBuilder.build().render(80);
 
-        Object[][] upgrades = new Object[inventory.getUpgrades().size() + 1][2];
+        Object[][] upgrades = new Object[inventory.getUpgrades().size()][2];
         int j = 0;
         Map<Upgrade, Integer> upgradeCounts = new HashMap<>();
         inventory.getUpgrades().forEach(u -> {
