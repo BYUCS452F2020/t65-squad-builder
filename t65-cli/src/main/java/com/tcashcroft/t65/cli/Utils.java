@@ -6,12 +6,22 @@ import com.tcashcroft.t65.cli.model.Squad;
 import com.tcashcroft.t65.cli.model.Upgrade;
 import org.springframework.shell.table.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
+
+    private static final String FRONT_ARC = "Front Arc";
+    private static final String REAR_ARC = "Rear Arc";
+    private static final String BULLSEYE_ARC = "Bullseye Arc";
+    private static final String SINGLE_TURRET_ARC = "Single Turret Arc";
+    private static final String DOUBLE_TURRET_ARC = "Double Turret Arc";
+    private static final String FULL_FRONT_ARC = "Full Front Arc";
+    private static final String FULL_REAR_ARC = "Full Rear Arc";
+    private static final String AGILITY = "Agility";
+    private static final String HULL = "Hull";
+    private static final String SHIELDS = "Shields";
+    private static final String FORCE = "Force";
 
     public static String getInventoryAsTable(Inventory inventory) {
         String shipString = "No ships in inventory.";
@@ -98,15 +108,16 @@ public class Utils {
                     }
                 }
         ).collect(Collectors.toList()).forEach(e -> statsMap.put(e.getKey(), e.getValue()));
-        Object[][] statsProperties = new Object[statsMap.size()][2];
+        List<Map.Entry<String, String>> sortedStats = sortStats(statsMap);
+        Object[][] statsProperties = new Object[sortedStats.size()][2];
         int j = 0;
-        for (Map.Entry e : statsMap.entrySet()) {
+        for (Map.Entry e : sortedStats) {
             statsProperties[j][0] = ((String) e.getKey()).toLowerCase();
             statsProperties[j++][1] = e.getValue();
         }
         ArrayTableModel statsModel = new ArrayTableModel(statsProperties);
         TableBuilder statsBuilder = new TableBuilder(statsModel);
-        statsBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(10));
+        statsBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(20));
         entityProperties[i++][1] = statsBuilder.build().render(65);
 
         entityProperties[i][0] = "Actions";
@@ -182,6 +193,61 @@ public class Utils {
         tableBuilder.on(CellMatchers.column(0)).addSizer(new AbsoluteWidthSizeConstraints(22));
         tableBuilder.on(CellMatchers.column(1)).addSizer(new AbsoluteWidthSizeConstraints(8));
         return tableBuilder.build().render(size);
+    }
+
+    private static List<Map.Entry<String, String>> sortStats(Map<String, String> statsMap) {
+        List<Map.Entry<String, String>> output = new LinkedList<>();
+
+        if (statsMap.containsKey(FRONT_ARC)) {
+            output.add(Map.entry(FRONT_ARC, statsMap.get(FRONT_ARC)));
+        }
+
+        if (statsMap.containsKey(REAR_ARC)) {
+            output.add(Map.entry(REAR_ARC, statsMap.get(REAR_ARC)));
+        }
+
+        if (statsMap.containsKey(BULLSEYE_ARC)) {
+
+            output.add(Map.entry(BULLSEYE_ARC, statsMap.get(BULLSEYE_ARC)));
+        }
+
+        if (statsMap.containsKey(SINGLE_TURRET_ARC)) {
+
+            output.add(Map.entry(SINGLE_TURRET_ARC, statsMap.get(SINGLE_TURRET_ARC)));
+        }
+
+        if (statsMap.containsKey(DOUBLE_TURRET_ARC)) {
+
+            output.add(Map.entry(DOUBLE_TURRET_ARC, statsMap.get(DOUBLE_TURRET_ARC)));
+        }
+
+        if (statsMap.containsKey(FULL_FRONT_ARC)) {
+            output.add(Map.entry(FULL_FRONT_ARC, statsMap.get(FULL_FRONT_ARC)));
+        }
+
+        if (statsMap.containsKey(FULL_REAR_ARC)) {
+
+            output.add(Map.entry(FULL_REAR_ARC, statsMap.get(FULL_REAR_ARC)));
+        }
+
+        if (statsMap.containsKey(AGILITY)) {
+            output.add(Map.entry(AGILITY, statsMap.get(AGILITY)));
+        }
+
+        if (statsMap.containsKey(HULL)) {
+            output.add(Map.entry(HULL, statsMap.get(HULL)));
+        }
+
+        if (statsMap.containsKey(SHIELDS)) {
+
+            output.add(Map.entry(SHIELDS, statsMap.get(SHIELDS)));
+        }
+
+        if (statsMap.containsKey(FORCE)) {
+            output.add(Map.entry(FORCE, statsMap.get(FORCE)));
+        }
+
+        return output;
     }
 
     private static String getStat(String stat, List<Map<String, String>> stats) {
