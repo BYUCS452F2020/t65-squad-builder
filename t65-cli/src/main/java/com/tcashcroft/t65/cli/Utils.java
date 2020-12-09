@@ -16,7 +16,6 @@ public class Utils {
     public static String getInventoryAsTable(Inventory inventory) {
         String shipString = "No ships in inventory.";
         if (!inventory.getShips().isEmpty()) {
-            Object[][] ships = new Object[inventory.getShips().size()][2];
             int i = 0;
             Map<Ship, Integer> shipCounts = new HashMap<>();
             inventory.getShips().forEach(s -> {
@@ -26,6 +25,7 @@ public class Utils {
                     shipCounts.put(s, 1);
                 }
             });
+            Object[][] ships = new Object[shipCounts.size()][2];
             for (Map.Entry<Ship, Integer> s : shipCounts.entrySet()) {
                 ships[i][0] = s.getKey().getName();
                 ships[i++][1] = s.getValue();
@@ -40,7 +40,6 @@ public class Utils {
 
         String upgradeString = "No upgrades in inventory";
         if (!inventory.getUpgrades().isEmpty()) {
-            Object[][] upgrades = new Object[inventory.getUpgrades().size()][2];
             int j = 0;
             Map<Upgrade, Integer> upgradeCounts = new HashMap<>();
             inventory.getUpgrades().forEach(u -> {
@@ -50,6 +49,7 @@ public class Utils {
                     upgradeCounts.put(u, 1);
                 }
             });
+            Object[][] upgrades = new Object[upgradeCounts.size()][2];
             for (Map.Entry<Upgrade, Integer> u : upgradeCounts.entrySet()) {
                 upgrades[j][0] = u.getKey().getName();
                 upgrades[j++][1] = u.getValue();
