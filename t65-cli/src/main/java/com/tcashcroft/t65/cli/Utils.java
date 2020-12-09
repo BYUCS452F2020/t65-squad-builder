@@ -76,10 +76,13 @@ public class Utils {
     }
 
     public static String getShipAsTable(Ship ship) {
-        Object[][] entityProperties = new Object[7][2];
+        Object[][] entityProperties = new Object[8][2];
         int i = 0;
         entityProperties[i][0] = "Pilot Name";
         entityProperties[i++][1] = ship.getName();
+
+        entityProperties[i][0] = "Call Sign";
+        entityProperties[i++][1] = ship.getCallSign();
 
         entityProperties[i][0] = "Ship Type";
         entityProperties[i++][1] = ship.getShipType();
