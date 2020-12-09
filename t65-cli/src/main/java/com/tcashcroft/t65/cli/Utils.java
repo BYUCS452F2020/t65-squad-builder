@@ -76,7 +76,7 @@ public class Utils {
     }
 
     public static String getShipAsTable(Ship ship) {
-        Object[][] entityProperties = new Object[8][2];
+        Object[][] entityProperties = new Object[9][2];
         int i = 0;
         entityProperties[i][0] = "Pilot Name";
         entityProperties[i++][1] = ship.getName();
@@ -89,6 +89,9 @@ public class Utils {
 
         entityProperties[i][0] = "Faction";
         entityProperties[i++][1] = ship.getFaction();
+
+        entityProperties[i][0] = "Initiative";
+        entityProperties[i++][1] = ship.getInitiative();
 
         entityProperties[i][0] = "Stats";
         List<String> stats = ship.getStats().stream().map(map -> {
