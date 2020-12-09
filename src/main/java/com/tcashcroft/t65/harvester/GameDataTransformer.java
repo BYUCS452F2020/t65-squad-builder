@@ -32,6 +32,11 @@ public class GameDataTransformer {
 
             if (p.getForce() != null) {
                 ship.setForce(p.getForce());
+                Map<String, String> forceStat = new HashMap<>();
+                forceStat.put("type", "force");
+                forceStat.put("value", Integer.toString(p.getForce().getValue()));
+                forceStat.put("recovers", Integer.toString(p.getForce().getRecovers()));
+                ship.getStats().add(forceStat);
             }
 
             ship.setPilotAbility(p.getAbility());

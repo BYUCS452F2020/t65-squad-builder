@@ -21,7 +21,7 @@ public class Utils {
     private static final String AGILITY = "agility";
     private static final String HULL = "hull";
     private static final String SHIELDS = "shields";
-    private static final String FORCE = "Force";
+    private static final String FORCE = "force";
 
     public static String getInventoryAsTable(Inventory inventory) {
         String shipString = "No ships in inventory.";
