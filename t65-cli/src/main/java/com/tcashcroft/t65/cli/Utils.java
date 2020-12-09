@@ -18,9 +18,9 @@ public class Utils {
     private static final String DOUBLE_TURRET_ARC = "Double Turret Arc";
     private static final String FULL_FRONT_ARC = "Full Front Arc";
     private static final String FULL_REAR_ARC = "Full Rear Arc";
-    private static final String AGILITY = "Agility";
-    private static final String HULL = "Hull";
-    private static final String SHIELDS = "Shields";
+    private static final String AGILITY = "agility";
+    private static final String HULL = "hull";
+    private static final String SHIELDS = "shields";
     private static final String FORCE = "Force";
 
     public static String getInventoryAsTable(Inventory inventory) {
