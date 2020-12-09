@@ -104,7 +104,12 @@ public class Utils {
                     if (type.equals("attack")) {
                         return Map.entry(map.get("arc"), map.get("value"));
                     } else {
-                        return Map.entry(map.get("type"), map.get("value"));
+                        if (map.get("type").equals("force")) {
+                            String value = map.get("value") + " R:" + map.get("recovers");
+                            return Map.entry(map.get("type"), value);
+                        } else {
+                            return Map.entry(map.get("type"), map.get("value"));
+                        }
                     }
                 }
         ).collect(Collectors.toList()).forEach(e -> statsMap.put(e.getKey(), e.getValue()));
